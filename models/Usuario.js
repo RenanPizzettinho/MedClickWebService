@@ -6,14 +6,14 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 let medicoSchema = require('./Medico');
+let pacienteSchema = require('./Paciente');
 
 let schema = new Schema({
   nome: require('./../fields/field-string-min-2-char-obrigatorio'),
   email: require('./../fields/field-email'),
   senha: require('./../fields/field-senha'),
-  // paciente: {type: Schema.Types.Mixed},
-  paciente: medicoSchema.schema,
-  medico: {type: Schema.Types.Mixed}
+  medico: medicoSchema.schema,
+  paciente: pacienteSchema.schema
 });
 
 module.exports = mongoose.model('User', schema);

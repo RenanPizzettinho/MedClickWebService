@@ -10,7 +10,8 @@ module.exports = function (ROUTER){
   router.get('/', usuario.getAll);
   router.post('/', usuario.save);
   router.get('/:id', usuario.get);
-  router.post('/:id/medicos', usuario.saveMedico);
+  router.post('/:id/perfil-medico', usuario.saveMedico);
+  router.post('/:id/perfil-paciente', usuario.savePaciente);
 
   ROUTER.use('/usuarios', router);
 };

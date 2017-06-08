@@ -12,7 +12,7 @@ function errorHandler(res, err, mensagem, status) {
   let retorno = {};
   let erros = [];
 
-  if (err instanceof MongooseError) {
+  if (err instanceof MongooseError || err.name  === 'MongoError') {
 
     if (err.message instanceof Object) {
       mensagem = err.message.message;
@@ -38,6 +38,8 @@ function errorHandler(res, err, mensagem, status) {
 
   } else {
 
+
+
     let obj = {};
     obj.tipo = err.name || "Erro";
     obj.mensagem = mensagem || err.message || "Erro interno no servidor."
@@ -62,6 +64,8 @@ function errorHandler(res, err, mensagem, status) {
           obj_erro.message = `O valor para o campo \"${obj_erro.path}\" deve ser um ${obj_erro.kind}.`;
         }
 
+
+
         obj.tipo = obj_erro.name;
         obj.nome_campo = key;
         obj.mensagem = obj_erro.message;
@@ -69,6 +73,7 @@ function errorHandler(res, err, mensagem, status) {
         erros.push(obj);
       })
     } else {
+
       mongooseError()
     }
   }
@@ -87,9 +92,18 @@ function errorHandler(res, err, mensagem, status) {
 
 
   function mongooseError() {
+
     let obj = {};
     obj.tipo = err.name;
+
+    // if(err.code === 11000){
+    //   obj.mensagem = "Erro" + err.path;
+    // }else {
+
     obj.mensagem = mensagem || err.message || "OOps.. Algum erro aconteceu."
+    // }
+
+
 
     erros.push(obj)
   }

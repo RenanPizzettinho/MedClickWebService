@@ -10,13 +10,16 @@
 let mongoose = require('mongoose');
 let Usuario = require('../models/Usuario');
 let Medico = require('../models/Medico');
+let Paciente = require('../models/Paciente');
+
 
 let api = {
   save: save,
   get: get,
   getAll: getAll,
   update: update,
-  saveMedico: saveMedico
+  saveMedico: saveMedico,
+  savePaciente: savePaciente
 };
 
 function save(req, res, next) {
@@ -65,7 +68,7 @@ function saveMedico(req, res, next) {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     let erro = new Error('O usuário informado é inválido');
     erro.status = 401;
-    throw erro;
+    return next(erro);
   }
 
   Usuario.findById(idUsuario).exec()
@@ -74,27 +77,70 @@ function saveMedico(req, res, next) {
       if (!_usuario) {
         let erro = new Error('O usuário informado é inválido');
         erro.status = 401;
-        throw erro;
+        return next(erro);
       }
 
-      let medico = new Medico(dados);
-      medico.validate(function (_erro) {
-        if (_erro) {
-          next(_erro);
+      _usuario.medico = dados;
+
+      _usuario.medico.validate(function (erro) {
+        if (erro) {
+          return next(erro);
         }
 
-        _usuario.medico = medico;
-        return _usuario.save(function (erro) {
-          if (erro) {
-            throw erro;
-          }
+        _usuario.save()
+          .then(function (_usuario) {
+            return res.json({data: _usuario})
+          }).catch(function (erro) {
+          return next(erro)
+        });
 
-          res.status(200).json({
-            data: _usuario
-          })
+      });
+
+    }).catch(function (erro) {
+    return next(erro);
+  });
+};
+
+function savePaciente(req, res, next) {
+
+  let dados = req.body;
+  let idUsuario = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    let erro = new Error('O usuário informado é inválido');
+    erro.status = 401;
+    return next(erro);
+  }
+
+  Usuario.findById(idUsuario).exec()
+    .then(function (_usuario) {
+
+      if (!_usuario) {
+        let erro = new Error('O usuário informado é inválido');
+        erro.status = 401;
+        return next(erro);
+      }
+
+      _usuario.paciente = dados;
+
+      _usuario.paciente.validate(function (erro) {
+        if (erro) {
+          return next(erro);
+        }
+
+        _usuario.save()
+          .then(function (_usuario) {
+            return res.json({
+              data: _usuario
+            })
+          }).catch(function (erro) {
+          return next(erro)
         });
       });
-    });
+
+    }).catch(function (erro) {
+    return next(erro);
+  });
 };
 
 module.exports = api;

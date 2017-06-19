@@ -1,0 +1,59 @@
+LOGIN
+----------
+POST /login			- informar login e senha para autenticação.
+
+
+USUARIO
+----------
+POST /usuarios		- informar dados necessários para criação de um usuario
+						nome (String, obrigatório),
+						email (String, obrigatório),
+						senha (String, obrigatório)
+						
+POST /usuarios/<ID_USUARIO>/perfil-medico	- informar dados necessários para a criação do perfil-medico do usuário:
+												CRM (String, obrigatorio, unico),
+												atendeEm (String, obrigatorio),
+												especialidade (String, obrigatorio),
+												diasAtencimentoDomicilio
+
+ATENDIMENTO
+----------
+POST /atendimentos		- informar dados necessários para criação de um atendimento: 
+						
+							idMedico (ObjectId do medico, obrigatório),
+							idpaciente (ObjectId do paciente, obrigatório),
+							descricaoNecessidade (String, obrigatório, minimo 2 caracter),
+							localConsulta (String, obrigatório, minimo 2 caracter),
+							dataConsulta (Date com data e hora da consulta),
+							feedbackConsulta (String),
+							situacao (Enum [EM_ABERTO, CONFIRMADO, CANCELADO, ATENDIDO] - default EM_ABERTO),
+							motivoCancelamento (String);
+						
+
+GET /atendimentos/<ID_MEDICO ou ID_PACIENTE>
+						- Poderá ser passado query idMedico para listar todos os atendimentos de determinado medico
+						- Poderá ser passado query idPaciente para listar todos os atendimentos para determinado paciente
+						- Poderá ser passado por query situacao=<situacao> para listar atendimentos em situacoes especificas [EM_ABERTO, CONFIRMADO, CANCELADO, ATENDIDO]
+						
+PUT /atendimentos/<ID_ATENDIMENTO>	-	informar dados para atualização dos dados do atendimento
+						
+
+MENSAGENS
+-----------
+
+POST /mensagens			- informar dados necessários para a criação de uma mensagem:
+							de (ObjectId, obrigatório),
+							para (ObjectId, obrigatório),
+							idAtendimento (ObjectId, obrigatório),
+							mensagem (String, obrigatório),
+							lida (Boolean - padrão FALSE),
+							respondido (Boolean - padrão FALSE),
+							
+
+GET /mensagens/<ID_MEDICO ou ID_PACIENTE> 	Lista  mensagens enviadas e recebidas para a ID informada
+											- Podera ser passado por query somenteEnviadas=true para listar somente enviadas
+											- Podera ser passado por query somenteRecebidas=true para listar somente recebidas
+											- Podera ser passado por query novas=true para listar somente as não lidas
+
+PUT /mensagens/<ID_MENSAGEM> 	-	informar dados para atualizacao dos dados da mensagem											
+

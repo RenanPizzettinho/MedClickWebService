@@ -10,16 +10,22 @@ let crypto = require('crypto');
 let User = require('../models/Usuario');
 
 let api = {
-  logon: logon,
-  requestPass: requestPass,
-  modifyPass: modifyPass
+  logar: logar,
+  solicitarSenha: solicitarSenha,
+  redefinirSenha: redefinirSenha
 };
 
-function logon(req, res, next) {
+function logar(req, res, next) {
 
   let dados = req.body;
 
-  User.findOne({email: dados.email, senha: dados.senha}, {email: true, nome: true, _id: false})
+  User.findOne({email: dados.email, senha: dados.senha}, {
+    email: true,
+    nome: true,
+    _id: true,
+    "medico._id": true,
+    "paciente._id": true
+  })
     .exec()
     .then(function (user) {
       if (!user) {
@@ -34,7 +40,7 @@ function logon(req, res, next) {
     return next(erro);
   })
 };
-function requestPass(req, res, next) {
+function solicitarSenha(req, res, next) {
   let email = req.body.email;
 
   async.waterfall([
@@ -121,7 +127,7 @@ function requestPass(req, res, next) {
     next(erro);
   })
 }
-function modifyPass(req, res, next) {
+function redefinirSenha(req, res, next) {
 
   let token = req.query.token;
 
@@ -132,6 +138,6 @@ function modifyPass(req, res, next) {
 
   })
 
-};
+}
 
 module.exports = api;

@@ -8,10 +8,11 @@
 "use strict";
 
 let mongoose = require('mongoose');
+let ObjectId = mongoose.Types.ObjectId;
+
 let Usuario = require('../models/Usuario');
 let Medico = require('../models/Medico');
 let Paciente = require('../models/Paciente');
-
 
 let api = {
   save: save,
@@ -19,7 +20,8 @@ let api = {
   getAll: getAll,
   update: update,
   saveMedico: saveMedico,
-  savePaciente: savePaciente
+  savePaciente: savePaciente,
+  savePessoa: savePessoa
 };
 
 function save(req, res, next) {
@@ -33,7 +35,8 @@ function save(req, res, next) {
     }).catch(function (erro) {
     return next(erro)
   });
-};
+}
+
 function get(req, res, next) {
   let id = req.params.id;
 
@@ -59,7 +62,6 @@ function getAll(req, res, next) {
 function update(req, res, next) {
   //todo
 };
-
 function saveMedico(req, res, next) {
 
   let dados = req.body;
@@ -82,24 +84,18 @@ function saveMedico(req, res, next) {
 
       _usuario.medico = dados;
 
-      _usuario.medico.validate(function (erro) {
-        if (erro) {
-          return next(erro);
-        }
-
-        _usuario.save()
-          .then(function (_usuario) {
-            return res.json({data: _usuario})
-          }).catch(function (erro) {
-          return next(erro)
-        });
-
+      _usuario.save()
+        .then(function (_usuario) {
+          return res.json({data: _usuario})
+        }).catch(function (erro) {
+        // return res.json(erro)
+        return next(erro.errors.medico)
       });
 
     }).catch(function (erro) {
     return next(erro);
   });
-};
+}
 
 function savePaciente(req, res, next) {
 
@@ -123,22 +119,56 @@ function savePaciente(req, res, next) {
 
       _usuario.paciente = dados;
 
-      _usuario.paciente.validate(function (erro) {
-        if (erro) {
-          return next(erro);
-        }
-
-        _usuario.save()
-          .then(function (_usuario) {
-            return res.json({
-              data: _usuario
-            })
-          }).catch(function (erro) {
-          return next(erro)
-        });
+      _usuario.save()
+        .then(function (_usuario) {
+          return res.json({
+            data: _usuario
+          })
+        }).catch(function (erro) {
+        return next(erro.errors.paciente || erro);
       });
 
     }).catch(function (erro) {
+    return next(erro);
+  });
+}
+
+function savePessoa(req, res, next) {
+
+  let dados = req.body;
+  let idUsuario = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    let erro = new Error('O usuário informado é inválido');
+    erro.status = 401;
+    return next(erro);
+  }
+
+  Usuario.findById(idUsuario).exec()
+    .then(function (_usuario) {
+
+      if (!_usuario) {
+        let erro = new Error('O usuário informado é inválido');
+        erro.status = 401;
+        return next(erro);
+      }
+
+
+      _usuario.pessoa = dados;
+
+      _usuario.save()
+        .then(function (_usuario) {
+          console.log('save', _usuario)
+          return res.json({
+            data: _usuario
+          })
+        }).catch(function (erro) {
+
+        return next(erro.errors.pessoa || erro);
+      });
+
+    }).catch(function (erro) {
+
     return next(erro);
   });
 };

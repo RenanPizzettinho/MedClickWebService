@@ -7,6 +7,7 @@ let usuario = require('../controller/usuario');
 module.exports = function (ROUTER){
 
 
+  router.post('/:id/perfil-pessoa', usuario.savePessoa);
   router.get('/', usuario.getAll);
   router.post('/', usuario.save);
   router.get('/:id', usuario.get);

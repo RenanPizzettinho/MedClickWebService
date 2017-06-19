@@ -7,9 +7,9 @@ const Field = {
   type: String,
   required: true,
   trim: true,
-  default: '',
   minlength: 2,
-  null : true,
+  // permite mais de um registro unico caso seja NULL
+  sparse : true,
   index : {unique : "O valor {VALUE} para o campo {PATH} já foi utilizado e deve ser único."}
 }
 

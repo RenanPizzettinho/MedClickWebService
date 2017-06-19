@@ -5,26 +5,34 @@
 
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
+let ObjectId = mongoose.Schema.Types.ObjectId;
 
 let schema = new Schema({
-  idMedico: {
-    type: Schema.Types.ObjectId,
-    ref: 'Medico',
-    required: "Campo {PATH} é obrigatório.",
-    default: '',
-    trim: true
-  },
-  idPaciente: {
-    type: Schema.Types.ObjectId,
-    ref: 'Paciente',
-    required: "Campo {PATH} é obrigatório.",
-    default: '',
-    trim: true
-  },
-  mensagem: require('./../fields/field-string-min-2-char-obrigatorio-unico'),
-  criado_em: require('./../fields/field-criado-em'),
-  situacao: ["Lida, Nova, Respondida"]
-
+  de: {type: ObjectId, required: true},
+  para: {type: ObjectId, required: true},
+  idAtendimento: {type: ObjectId, required: false, ref: 'Atendimento'},
+  mensagem: require('./../fields/field-string-min-2-char-obrigatorio'),
+  lida: require('./../fields/field-boolean-obrigatorio-default-false'),
+  respondido: require('./../fields/field-boolean-obrigatorio-default-false'),
+  dataEnvio: require('./../fields/field-date-default-now')
 });
 
-module.exports = mongoose.model('Mensagem', schema);
+// schema.pre('save', function (next) {
+  // let self = this;
+  // console.log('perfil:', this)
+  //
+  // Usuario.find().or([
+  //   {'paciente': {$exists: true}},
+  //   {'medico': {$exists: true}},
+  // ]).exec()
+  //   .then(function (u) {
+  //
+  // console.log('encontrado', u)
+  // next()
+  // }).catch(function (error) {
+  //
+  // })
+
+// })
+
+module.exports = mongoose.model('Mensagem', schema, 'mensagens');

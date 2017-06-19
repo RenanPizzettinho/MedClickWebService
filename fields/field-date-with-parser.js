@@ -7,7 +7,6 @@
 let moment = require('moment');
 
 const _set = function (valor) {
-  console.log('convert', valor)
   return moment(valor, ["DD/MM/YYYY", "DD-MM-YYYY", "x", "X"], true);
   // return moment(valor);
 }

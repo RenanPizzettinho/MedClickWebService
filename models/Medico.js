@@ -7,14 +7,15 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let schema = new Schema({
-  _id : false,
   crm: require('./../fields/field-string-min-2-char-obrigatorio-unico'),
+  atendeEm: require('./../fields/field-string-min-2-char-obrigatorio'),
   especialidade: require('./../fields/field-string-min-2-char-obrigatorio'),
-  dias_atendimento_domicilio: {
+  diasAtendimentoDomicilio: {
     type: String,
     enum: ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'],
-    required: true
+    required: true,
+    trim: true
   },
 });
 
-module.exports = mongoose.model('Medico', schema);
+module.exports = mongoose.model('Medico', schema, 'Usuario.medico');

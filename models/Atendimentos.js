@@ -50,4 +50,4 @@ let schema = new Schema({
 //   })
 // });
 
-  module.exports = mongoose.model('Atendimento', schema);
+  module.exports = mongoose.model('Atendimento', schema, 'atendimentos');

@@ -18,4 +18,10 @@ let schema = new Schema({
   paciente: pacienteSchema.schema
 });
 
+// schema.pre('findOneAndUpdate', function (next) {
+  // console.log('executando pre')
+  // this.options.runValidators = true;
+  // next();
+// })
+
 module.exports = mongoose.model('User', schema, 'users');

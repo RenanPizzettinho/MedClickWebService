@@ -39,7 +39,7 @@ function logar(req, res, next) {
     }).catch(function (erro) {
     return next(erro);
   })
-};
+}
 function solicitarSenha(req, res, next) {
   let email = req.body.email;
 

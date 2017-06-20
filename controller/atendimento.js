@@ -6,6 +6,7 @@
 
 let mongoose = require('mongoose');
 let ObjectId = mongoose.Types.ObjectId;
+let _ = require('lodash');
 let Atendimento = require('../models/Atendimentos');
 
 let api = {
@@ -31,26 +32,29 @@ function save(req, res, next) {
   });
 }
 function getAll(req, res, next) {
-
+  let id = req.params.id;
   let idPaciente = req.query.idPaciente;
   let idMedico = req.query.idMedico;
   let situacao = req.query.situacao;
 
-  if (!idPaciente && !idMedico) {
-    let erro = new Error('É obrigatório informar no parâmetro \'idMedico\' caso seja médico, ou \'idPaciente\' caso seja paciente.');
-    erro.status = 403;
-    return next(erro);
+  let query = {};
+
+  if (!_.isUndefined(idPaciente)) {
+    query['idPaciente'] = idPaciente
   }
 
-  let query = {
-    $or: [
-      {idMedico: idMedico},
-      {idPaciente: idPaciente}
-    ],
-    $and: [
-      {situacao: new RegExp(situacao, 'i') || {$regex: '.*.*'}}
-    ]
-  };
+  if (!_.isUndefined(idMedico)) {
+    query['idMedico'] = idMedico
+  }
+
+  if (!_.isUndefined(situacao)) {
+    query['situacao'] = situacao;
+  }
+
+  query['$or'] = [
+    {idMedico: id},
+    {idPaciente: id}
+  ]
 
   Atendimento.find(query).exec()
     .then(function (users) {
@@ -64,14 +68,14 @@ function getAll(req, res, next) {
 function update(req, res, next) {
   let idAtendimento = req.params.idAtendimento;
   let dados = req.body;
-console.log('dados', dados)
+
   Atendimento.findOneAndUpdate({_id: idAtendimento}, dados).update().exec()
-    .then(function(_atendimento){
+    .then(function (_atendimento) {
       res.json({
         data: _atendimento
       })
-    }).catch(function(erro){
-      next(erro);
+    }).catch(function (erro) {
+    next(erro);
   })
 
 }

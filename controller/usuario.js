@@ -36,7 +36,6 @@ function save(req, res, next) {
     return next(erro)
   });
 }
-
 function get(req, res, next) {
   let id = req.params.id;
 
@@ -60,8 +59,32 @@ function getAll(req, res, next) {
   })
 };
 function update(req, res, next) {
-  //todo
-};
+  let id = req.params.id;
+  let dados = req.body;
+
+  Usuario.findOne({'_id': id}).exec()
+    .then(function (_usuario) {
+
+      _usuario.paciente = dados.paciente;
+      _usuario.medico = dados.medico;
+
+      return _usuario.save().then(function (usuario) {
+        return res.json({
+          data: usuario
+        })
+      }).catch(function (erro) {
+
+        return next(erro);
+      })
+
+      return res.status(200).json({
+        data: _usuario
+      })
+    }).catch(function (erro) {
+    next(erro);
+  })
+
+}
 function saveMedico(req, res, next) {
 
   let dados = req.body;

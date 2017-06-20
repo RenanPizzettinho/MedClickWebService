@@ -7,7 +7,6 @@ const Field = {
   type: String,
   required: true,
   trim: true,
-  default: '',
   minlength: 2
 }
 

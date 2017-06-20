@@ -6,7 +6,7 @@ let atendimento = require('../controller/atendimento');
 
 module.exports = function (ROUTER) {
 
-  router.get('/', atendimento.getAll);
+  router.get('/:id', atendimento.getAll);
   router.post('/', atendimento.save);
   router.put('/:idAtendimento', atendimento.update);
 

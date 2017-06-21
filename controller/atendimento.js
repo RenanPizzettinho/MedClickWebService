@@ -8,6 +8,7 @@ let mongoose = require('mongoose');
 let ObjectId = mongoose.Types.ObjectId;
 let _ = require('lodash');
 let Atendimento = require('../models/Atendimentos');
+let Usuario = require('../models/Usuario');
 
 let api = {
   save: save,
@@ -31,6 +32,7 @@ function save(req, res, next) {
     return next(erro)
   });
 }
+
 function getAll(req, res, next) {
   let id = req.params.id;
   let idPaciente = req.query.idPaciente;
@@ -57,10 +59,12 @@ function getAll(req, res, next) {
   ]
 
   Atendimento.find(query).exec()
-    .then(function (users) {
+    .then(function (atendimento) {
+
       return res.status(200).json({
-        data: users
+        data: atendimento
       })
+
     }).catch(function (erro) {
     next(erro);
   })

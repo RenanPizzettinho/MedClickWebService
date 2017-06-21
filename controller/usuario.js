@@ -39,7 +39,7 @@ function save(req, res, next) {
 function get(req, res, next) {
   let id = req.params.id;
 
-  Usuario.findById(id)
+  Usuario.findById(id, {senha: false})
     .then(function (_user) {
       return res.status(200).json({
         data: _user
@@ -176,7 +176,7 @@ function savePessoa(req, res, next) {
         return next(erro);
       }
 
-
+      _usuario.nome = dados.nome;
       _usuario.pessoa = dados;
 
       _usuario.save()

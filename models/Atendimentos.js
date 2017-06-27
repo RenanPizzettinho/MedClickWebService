@@ -9,8 +9,7 @@ let ObjectId = mongoose.Schema.Types.ObjectId;
 
 
 let schema = new Schema({
-  idMedico: {type: ObjectId, required: true, ref: 'User'},
-  nomeMedico : Schema.Types.Mixed,
+  idMedico: {type: ObjectId, ref: "Medico"},
   idPaciente: {type: ObjectId, required: true, ref: 'User'},
   descricaoNecessidade: {type: String, required: true},
   localConsulta: require('./../fields/field-string-min-2-char-obrigatorio'),
@@ -26,12 +25,17 @@ let schema = new Schema({
   dataRegistro: {type: Date, required: true, default: Date.now}
 });
 
+module.exports = mongoose.model('Atendimento', schema, 'atendimentos');
+
+
+
+
 // schema.pre('update', function (next) {
-  // let self = this;
- // console.log('new idmedico', self._update.idMedico)
- //  console.log('old', this.isNew)
- //
- //  console.log('aaa', this._idMedico);
+// let self = this;
+// console.log('new idmedico', self._update.idMedico)
+//  console.log('old', this.isNew)
+//
+//  console.log('aaa', this._idMedico);
 // next()
 
 // if(this.isModified('idMedico') || this.isModified('idMedico')){
@@ -51,4 +55,3 @@ let schema = new Schema({
 //   })
 // });
 
-  module.exports = mongoose.model('Atendimento', schema, 'atendimentos');

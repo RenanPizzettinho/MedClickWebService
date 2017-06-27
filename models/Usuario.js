@@ -13,15 +13,19 @@ let schema = new Schema({
   nome: require('./../fields/field-string-min-2-char-obrigatorio'),
   email: require('./../fields/field-email'),
   senha: require('./../fields/field-senha'),
+  cpf: require('./../fields/field-cpf'),
+  dtNascimento: require('./../fields/field-date-with-parser'),
+  criadoEm: require('./../fields/field-criado-em'),
   pessoa: pessoaSchema.schema,
-  medico: medicoSchema.schema,
+  // medico: medicoSchema.schema,
+  medico: {type: Schema.Types.ObjectId, ref: 'Medico'},
   paciente: pacienteSchema.schema
 });
+
+module.exports = mongoose.model('User', schema, 'usuarios');
 
 // schema.pre('findOneAndUpdate', function (next) {
   // console.log('executando pre')
   // this.options.runValidators = true;
   // next();
 // })
-
-module.exports = mongoose.model('User', schema, 'users');

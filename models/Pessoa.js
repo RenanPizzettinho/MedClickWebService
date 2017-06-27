@@ -8,8 +8,7 @@ let Schema = mongoose.Schema;
 
 let schema = new Schema({
   _id: false,
-  cpf: require('./../fields/field-cpf'),
-  dtNascimento: require('./../fields/field-date-with-parser')
+
 });
 
 module.exports = mongoose.model('Pessoa', schema);

@@ -57,7 +57,7 @@ function getAll(req, res, next) {
   }
 
   if (!_.isUndefined(idAtendimento)) {
-    query['idAtendimento'] = idAtendimento;
+    query['idAtendimento'] = ObjectId(idAtendimento);
   }
 
   if (!somenteRecebidas && !somenteEnviadas) {

@@ -92,7 +92,7 @@ function getAll(req, res, next) {
       $project: {
         "medico": 0,
         "paciente": 0
-      }
+      },
     }
   ]).exec()
     .then(function (_atendimento) {

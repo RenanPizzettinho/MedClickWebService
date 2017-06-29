@@ -132,10 +132,12 @@ function update(req, res, next) {
   let dados = req.body;
 
   dados.dtNascimento = moment(req.body.dtNascimento, ["DD/MM/YYYY", "DD-MM-YYYY", "x", "X"]);
-  Usuario.findOneAndUpdate({'_id': id}, dados, {runValidators: true}).exec()
+  Usuario.findOneAndUpdate({'_id': id}, dados, {runValidators: true, new: true}).exec()
     .then(function (_usuario) {
 
-      return res.status(204).json();
+      return res.status(200).json({
+        data : _usuario
+      });
 
     }).catch(function (erro) {
     next(erro);

@@ -19,7 +19,7 @@ let schema = new Schema({
   criadoEm: require('./../fields/field-criado-em')
 });
 
-module.exports = mongoose.model('User', schema, 'usuarios');
+module.exports = mongoose.model('Usuario', schema, 'usuarios');
 
 // schema.pre('findOneAndUpdate', function (next) {
 // console.log('executando pre')

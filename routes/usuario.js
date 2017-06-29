@@ -14,7 +14,12 @@ module.exports = function (ROUTER){
   router.put('/:id', usuario.update);
 
   router.post('/:id/perfil-medico', usuario.saveMedico);
+  router.get( '/:id/perfil-medico', usuario.getMedico);
+  router.put( '/:id/perfil-medico', usuario.updateMedico);
   router.post('/:id/perfil-paciente', usuario.savePaciente);
+  /*IMPLEMENTAR*/
+  router.put('/:id/perfil-paciente', usuario.updatePaciente);
+  router.get('/:id/perfil-paciente', usuario.getPaciente);
 
 
   ROUTER.use('/usuarios', router);

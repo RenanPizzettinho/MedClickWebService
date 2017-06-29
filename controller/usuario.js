@@ -21,7 +21,11 @@ let api = {
   getAll: getAll,
   update: update,
   saveMedico: saveMedico,
-  savePaciente: savePaciente
+  getMedico: getMedico,
+  updateMedico: updateMedico,
+  savePaciente: savePaciente,
+  getPaciente: getPaciente,
+  updatePaciente: updatePaciente
 };
 
 function save(req, res, next) {
@@ -90,6 +94,39 @@ function saveMedico(req, res, next) {
     return next(erro);
   });
 }
+function getMedico(req, res, next) {
+  let idUsuario = req.params.id;
+
+  Medico.find({'idUsuario': idUsuario}).exec()
+    .then(function (_medico) {
+      if (!_medico) {
+        return res.status(200).json({
+          data: {}
+        })
+      }
+
+      return res.status(200).json({
+        data: _medico
+      })
+
+    }).catch(function (erro) {
+    next(erro);
+  })
+}
+function updateMedico(req, res, next) {
+
+  let idUsuario = req.params.id;
+  let dados = req.body;
+
+  Medico.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true}).exec()
+    .then(function (_medico) {
+      return res.status(200).json({
+        data: _medico
+      })
+    }).catch(function (erro) {
+    next(erro);
+  })
+}
 function update(req, res, next) {
   let id = req.params.id;
   let dados = req.body;
@@ -139,6 +176,38 @@ function savePaciente(req, res, next) {
     }).catch(function (erro) {
     return next(erro);
   });
+}
+function getPaciente(req, res, next) {
+  let idUsuario = req.params.id;
+
+  Paciente.find({'idUsuario': idUsuario}).exec()
+    .then(function (_paciente) {
+      if (!_paciente) {
+        return res.status(200).json({
+          data: {}
+        })
+      }
+
+      return res.status(200).json({
+        data: _paciente
+      })
+
+    }).catch(function (erro) {
+    next(erro);
+  })
+}
+function updatePaciente(req, res, next) {
+  let idUsuario = req.params.id;
+  let dados = req.body;
+
+  Paciente.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true}).exec()
+    .then(function (_paciente) {
+      return res.status(200).json({
+        data: _paciente
+      })
+    }).catch(function (erro) {
+    next(erro);
+  })
 }
 
 module.exports = api;

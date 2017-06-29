@@ -24,6 +24,7 @@ function save(req, res, next) {
 
   let dados = req.body;
 
+
   Atendimento.create(dados)
     .then(function (_atendimento) {
 
@@ -37,7 +38,7 @@ function save(req, res, next) {
 }
 
 function getAll(req, res, next) {
-  let id = req.params.id;
+  let id = req.params.idContexto;
   let idPaciente = req.query.idPaciente;
   let idMedico = req.query.idMedico;
   let situacao = req.query.situacao;
@@ -60,85 +61,85 @@ function getAll(req, res, next) {
     {idMedico: id},
     {idPaciente: id}
   ];
+  // {$unwind : '$dados'},
 
-  Atendimento.aggregate(
-    [
-      {"$unwind": "$idMedico"},
-      {
-        "$lookup": {
-          "from": "User",
-          "localField": "idMedico",
-          "foreignField": "medico._id",
-          "as": "resulting"
-        }
-      },
+  Atendimento.aggregate([
+    // {$unwind: "$dados"},
+    {
+      $match: {
+        $or: [
+          {'idMedico': mongoose.Types.ObjectId(id)},
+          {'idPaciente': mongoose.Types.ObjectId(id)}
+        ]
+      }
+    },
+    {
+      $lookup: {
+        from: "usuarios",
+        localField: "idMedico",
+        foreignField: "idMedico",
+        as: "medico"
+      }
+    },
+    {
+      $lookup: {
+        from: "usuarios",
+        localField: "idPaciente",
+        foreignField: "idPaciente",
+        as: "paciente"
+      }
+    },
+    {$unwind: {path: "$medico", "preserveNullAndEmptyArrays": true}},
+    {$unwind: {path:"$paciente", "preserveNullAndEmptyArrays": true}},
 
-    ]).exec().then(function (atends) {
-    console.log('res');
-    res.json(atends)
-  }).catch(function (erro) {
-    next(erro);
-  });
+    {
+      $addFields: {
+        "nomeMedico": { $ifNull: [ "$medico.nome", "<NOME NAO LOCALIZADO>" ] },
+        "nomePaciente": { $ifNull: [ "$paciente.nome", "<NOME NAO LOCALIZADO>" ] },
+      }
+    },
+    {
+      $project: {
+        "_id": 0,
+        "medico": 0,
+        "paciente" : 0
+      }
+    }
+  ]).exec()
+    .then(function (dt) {
+        console.log(dt);
+        res.json(dt);
+      }
+    );
+  return;
+  // console.log('aqui', query)
+  // Atendimento.find(query).populate('nomePaciente')
+  // {
+  // path: 'idMedico',
+  // select: 'idUsuario',
+  // populate: {
+  //   path: 'idUsuario',
+  //   select: 'nome -_id'
+  // }
+  // }).populate({
+  //   path: 'nomePaciente',
+  // model: 'Usuario'
+  // select : 'idUsuario -_id',
+  // populate : {
+  //   path: 'idUsuario',
+  //   select: 'nome -_id'
+  // }
 
-// Atendimento.find(query).exec()
-//   .then(function (atendimento) {
-//     let dados = [];
-//
-
-// async.every(atendimento, function (ele, callback) {
-//     console.log('eleme', ele)
-//   callback(null, ele);
-//
-// },function(err, val){
-//   console.log('finalizou tudo', val, err)
-// })
-
-// atendimento.forEach(function(at){
-//   Usuario.findOne({"medico._id": atendimento.idMedico}).exec()
-//     .then(function (medico) {
-//       at.nomeMedico = medico.nome;
-//       dados.push(atendimento);
+  // })
+// .
+//   exec()
+//     .then(function (_atendimentos) {
+//       res.json({
+//         data: _atendimentos
+//       })
 //     }).catch(function (erro) {
 //     next(erro);
-//   })
-// });
-
-
-// let dados = [];
-// atendimento.forEach(function (_at) {
-//   Usuario.findOne({"medico._id": _at.idMedico}, {"nome": true})
-//     .exec()
-//     .then(function (medico) {
-//       _at.nomeMedico = medico.nome;
-//       dados.push(_at);
-//     }).catch(function () {
 //   });
-//
-// })
-
-// }).catch(function () {
-// console.log('finaleira')
-// })
-
-// Atendimento.find(query).exec()
-//   .then(function (atendimento) {
-//
-//     let dados = [];
-//
-//     atendimento.forEach(function (_at) {
-//       Usuario.findOne({"medico._id": _at.idMedico}, {"nome": true})
-//         .exec()
-//         .then(function (medico) {
-//           _at.nomeMedico = medico.nome;
-//           dados.push(_at);
-//         }).catch(function () {
-//       });
-//
-//     })
-//   }).catch(function (erro) {
-//   next(erro);
-// })
-//
 
 }
 

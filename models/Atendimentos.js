@@ -10,7 +10,7 @@ let ObjectId = mongoose.Schema.Types.ObjectId;
 
 let schema = new Schema({
   idMedico: {type: ObjectId, ref: "Medico"},
-  idPaciente: {type: ObjectId, required: true, ref: 'User'},
+  idPaciente: {type: ObjectId, required: true, ref: 'Paciente'},
   descricaoNecessidade: {type: String, required: true},
   localConsulta: require('./../fields/field-string-min-2-char-obrigatorio'),
   dataConsulta: require('./../fields/field-date-with-parser'),
@@ -23,6 +23,12 @@ let schema = new Schema({
   },
   motivoCanelamento: {type: String},
   dataRegistro: {type: Date, required: true, default: Date.now}
+});
+
+schema.virtual('nomePaciente', {
+  ref: 'Usuario',
+  localField: 'idMedico',
+  foreignField: 'idMedico'
 });
 
 module.exports = mongoose.model('Atendimento', schema, 'atendimentos');

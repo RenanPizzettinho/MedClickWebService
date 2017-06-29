@@ -12,7 +12,6 @@ const _validate = function (valor) {
 
 const Field = {
   type: String,
-  required: true,
   minlength: 11,
   maxlength: 11,
   validate: _validate

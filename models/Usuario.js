@@ -7,7 +7,6 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 let medicoSchema = require('./Medico');
 let pacienteSchema = require('./Paciente');
-let pessoaSchema = require('./Pessoa');
 
 let schema = new Schema({
   nome: require('./../fields/field-string-min-2-char-obrigatorio'),
@@ -15,17 +14,15 @@ let schema = new Schema({
   senha: require('./../fields/field-senha'),
   cpf: require('./../fields/field-cpf'),
   dtNascimento: require('./../fields/field-date-with-parser'),
-  criadoEm: require('./../fields/field-criado-em'),
-  pessoa: pessoaSchema.schema,
-  // medico: medicoSchema.schema,
-  medico: {type: Schema.Types.ObjectId, ref: 'Medico'},
-  paciente: pacienteSchema.schema
+  idMedico: {type: Schema.Types.ObjectId, ref: 'Medico'},
+  idPaciente: {type: Schema.Types.ObjectId, ref: 'Paciente'},
+  criadoEm: require('./../fields/field-criado-em')
 });
 
 module.exports = mongoose.model('User', schema, 'usuarios');
 
 // schema.pre('findOneAndUpdate', function (next) {
-  // console.log('executando pre')
-  // this.options.runValidators = true;
-  // next();
+// console.log('executando pre')
+// this.options.runValidators = true;
+// next();
 // })

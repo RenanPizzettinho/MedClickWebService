@@ -7,12 +7,11 @@
 let moment = require('moment');
 
 const _set = function (valor) {
-  return moment(valor, ["DD/MM/YYYY", "DD-MM-YYYY", "x", "X", moment.ISO_8601], true);
+  return moment(valor, ["DD/MM/YYYY", "DD-MM-YYYY", "x", "X"]);
 };
 
 const Field = {
   type: Date,
-  required: true,
   set: _set
 };
 

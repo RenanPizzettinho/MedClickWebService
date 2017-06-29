@@ -6,10 +6,10 @@
 
 let mongoose = require('mongoose');
 let ObjectId = mongoose.Types.ObjectId;
-let Paciente = require('./models/Paciente');
 let _ = require('lodash');
-let Medico = require('./models/Medico');
 let Usuario = require('./models/Usuario');
+let Medico = require('./models/Medico');
+let Paciente = require('./models/Paciente');
 let async = require('async');
 let await = require('await');
 let promisify = require('promisify');
@@ -52,7 +52,6 @@ mongoose.connection.on('connected', function () {
                     callback(null, {mensagem: "- Usuario " + user._id + " não possui perfil médico incorporado"})
                   }
                 },
-
                 function (callback) {
 
                   if (user.hasOwnProperty('paciente')) {
@@ -77,7 +76,19 @@ mongoose.connection.on('connected', function () {
 
                   }
                 },
+                function (callback) {
+                  if (user.hasOwnProperty('pessoa')) {
+                    user.pessoa.idUsuario = user._id;
 
+                    user.cpf = user.pessoa.cpf;
+                    user.dtNascimento = user.pessoa.dtNascimento;
+                    delete (user.pessoa);
+
+                    return callback(null, {mensagem: "Usuario com ID " + user._id + " desmembrado a pessoa"});
+                  } else {
+                    return callback(null, {mensagem: "- Usuario " + user._id + " não possui perfil pessoa incorporado"})
+                  }
+                },
 
                 // atualiza dados da collection users
                 function (callback) {

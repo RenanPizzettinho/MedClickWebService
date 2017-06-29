@@ -67,6 +67,7 @@ function getAll(req, res, next) {
     ]
   }
 
+  console.log(query);
   Mensagem.find(query).exec()
     .then(function (users) {
       return res.status(200).json({

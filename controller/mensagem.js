@@ -38,7 +38,7 @@ function getAll(req, res, next) {
 
   let query = {};
 
-  if (!_.isUndefined(lida)) {
+  if (!_.isEmpty(lida)) {
     lida = !(lida === 'true');
     lida ? query['lida'] = true : query['lida'] = false;
   }
@@ -56,7 +56,7 @@ function getAll(req, res, next) {
     somenteEnviadas = undefined;
   }
 
-  if (!_.isUndefined(idAtendimento)) {
+  if (!_.isEmpty(idAtendimento)) {
     query['idAtendimento'] = ObjectId(idAtendimento);
   }
 

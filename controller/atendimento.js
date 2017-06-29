@@ -45,33 +45,23 @@ function getAll(req, res, next) {
 
   let query = {};
 
-  if (!_.isUndefined(idPaciente)) {
-    query['idPaciente'] = idPaciente
-  }
+  query['$or'] = [
+    {'idPaciente': ObjectId(id)},
+    {'idMedico': ObjectId(id)}
+  ];
 
-  if (!_.isUndefined(idMedico)) {
-    query['idMedico'] = idMedico
-  }
 
-  if (!_.isUndefined(situacao)) {
+  !_.isEmpty(idPaciente) ? query["idPaciente"] = ObjectId(idPaciente) : '';
+  !_.isEmpty(idMedico) ? query["idMedico"] = ObjectId(idPMedico) : '';
+
+
+  if (!_.isEmpty(situacao)) {
     query['situacao'] = situacao;
   }
 
-  query['$or'] = [
-    {idMedico: id},
-    {idPaciente: id}
-  ];
-  // {$unwind : '$dados'},
-
   Atendimento.aggregate([
-    // {$unwind: "$dados"},
     {
-      $match: {
-        $or: [
-          {'idMedico': mongoose.Types.ObjectId(id)},
-          {'idPaciente': mongoose.Types.ObjectId(id)}
-        ]
-      }
+      $match: query
     },
     {
       $lookup: {
@@ -90,57 +80,30 @@ function getAll(req, res, next) {
       }
     },
     {$unwind: {path: "$medico", "preserveNullAndEmptyArrays": true}},
-    {$unwind: {path:"$paciente", "preserveNullAndEmptyArrays": true}},
+    {$unwind: {path: "$paciente", "preserveNullAndEmptyArrays": true}},
 
     {
       $addFields: {
-        "nomeMedico": { $ifNull: [ "$medico.nome", "<NOME NAO LOCALIZADO>" ] },
-        "nomePaciente": { $ifNull: [ "$paciente.nome", "<NOME NAO LOCALIZADO>" ] },
+        "nomeMedico": {$ifNull: ["$medico.nome", "<NOME NAO LOCALIZADO>"]},
+        "nomePaciente": {$ifNull: ["$paciente.nome", "<NOME NAO LOCALIZADO>"]},
       }
     },
     {
       $project: {
-        "_id": 0,
         "medico": 0,
-        "paciente" : 0
+        "paciente": 0
       }
     }
   ]).exec()
-    .then(function (dt) {
-        console.log(dt);
-        res.json(dt);
+    .then(function (_atendimento) {
+
+        return res.status(200).json({
+          data: _atendimento
+        });
       }
-    );
-  return;
-  // console.log('aqui', query)
-  // Atendimento.find(query).populate('nomePaciente')
-  // {
-  // path: 'idMedico',
-  // select: 'idUsuario',
-  // populate: {
-  //   path: 'idUsuario',
-  //   select: 'nome -_id'
-  // }
-  // }).populate({
-  //   path: 'nomePaciente',
-  // model: 'Usuario'
-  // select : 'idUsuario -_id',
-  // populate : {
-  //   path: 'idUsuario',
-  //   select: 'nome -_id'
-  // }
-
-  // })
-// .
-//   exec()
-//     .then(function (_atendimentos) {
-//       res.json({
-//         data: _atendimentos
-//       })
-//     }).catch(function (erro) {
-//     next(erro);
-//   });
-
+    ).catch(function (erro) {
+    next(erro);
+  });
 }
 
 function update(req, res, next) {

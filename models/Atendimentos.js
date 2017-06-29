@@ -25,11 +25,6 @@ let schema = new Schema({
   dataRegistro: {type: Date, required: true, default: Date.now}
 });
 
-schema.virtual('nomePaciente', {
-  ref: 'Usuario',
-  localField: 'idMedico',
-  foreignField: 'idMedico'
-});
 
 module.exports = mongoose.model('Atendimento', schema, 'atendimentos');
 

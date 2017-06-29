@@ -44,7 +44,7 @@ function getAll(req, res, next) {
   }
 
   if (somenteRecebidas) {
-    query['para'] = id;
+    query['para'] = ObjectId(id);
   } else {
     somenteRecebidas = undefined;
   }
@@ -62,13 +62,18 @@ function getAll(req, res, next) {
 
   if (!somenteRecebidas && !somenteEnviadas) {
     query['$or'] = [
-      {'para': id},
-      {'de': id}
+      {'para': ObjectId(id)},
+      {'de': ObjectId(id)}
     ]
   }
 
   console.log(query);
-  Mensagem.find(query).exec()
+
+  Mensagem.aggregate([
+
+    {$match: query}
+  ]
+  ).exec()
     .then(function (users) {
       return res.status(200).json({
         data: users

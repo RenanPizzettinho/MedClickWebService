@@ -9,7 +9,7 @@ mongoose.Promise = require('bluebird');
 let async = require('async');
 let ObjectId = mongoose.Types.ObjectId;
 let _ = require('lodash');
-let Atendimento = require('../models/Atendimentos');
+let Atendimento = require('../models/Atendimento');
 let Usuario = require('../models/Usuario');
 
 

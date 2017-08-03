@@ -40,7 +40,8 @@ function save(req, res, next) {
     return next(erro)
   });
 }
-function get(req, res, next) {
+
+function get (req, res, next) {
   let id = req.params.id;
 
   Usuario.findById(id, {senha: false})
@@ -52,6 +53,7 @@ function get(req, res, next) {
     return next(erro);
   })
 };
+
 function getAll(req, res, next) {
   Usuario.find({}, {senha: false, __v: false}).exec()
     .then(function (users) {
@@ -62,6 +64,7 @@ function getAll(req, res, next) {
     next(erro);
   })
 };
+
 function saveMedico(req, res, next) {
 
   let dados = req.body;
@@ -84,8 +87,16 @@ function saveMedico(req, res, next) {
 
       dados.idUsuario = _usuario._id;
       Medico.create(dados)
-        .then(function (_usuario) {
-          return res.json({data: _usuario})
+        .then(function (_medico) {
+
+          _usuario.idMedico = _medico._id;
+
+          _usuario.save().then(function () {
+            return res.json({data: _medico})
+          }).catch(function (erro) {
+            return next(erro)
+          })
+
         }).catch(function (erro) {
         // return res.json(erro)
         return next(erro)
@@ -94,6 +105,7 @@ function saveMedico(req, res, next) {
     return next(erro);
   });
 }
+
 function getMedico(req, res, next) {
   let idUsuario = req.params.id;
 
@@ -113,6 +125,7 @@ function getMedico(req, res, next) {
     next(erro);
   })
 }
+
 function updateMedico(req, res, next) {
 
   let idUsuario = req.params.id;
@@ -127,6 +140,7 @@ function updateMedico(req, res, next) {
     next(erro);
   })
 }
+
 function update(req, res, next) {
   let id = req.params.id;
   let dados = req.body;
@@ -136,7 +150,7 @@ function update(req, res, next) {
     .then(function (_usuario) {
 
       return res.status(200).json({
-        data : _usuario
+        data: _usuario
       });
 
     }).catch(function (erro) {
@@ -144,6 +158,7 @@ function update(req, res, next) {
   })
 
 }
+
 function savePaciente(req, res, next) {
 
   let dados = req.body;
@@ -167,9 +182,17 @@ function savePaciente(req, res, next) {
       dados.idUsuario = _usuario._id;
 
       Paciente.create(dados)
-        .then(function (_usuario) {
-          return res.json({
-            data: _usuario
+        .then(function (_paciente) {
+
+          _usuario.idPaciente = _paciente._id;
+
+          _usuario.save().then(function () {
+
+            return res.json({
+              data: _paciente
+            })
+          }).catch(function (erro) {
+            return next(erro);
           })
         }).catch(function (erro) {
         return next(erro);
@@ -179,6 +202,7 @@ function savePaciente(req, res, next) {
     return next(erro);
   });
 }
+
 function getPaciente(req, res, next) {
   let idUsuario = req.params.id;
 
@@ -198,6 +222,7 @@ function getPaciente(req, res, next) {
     next(erro);
   })
 }
+
 function updatePaciente(req, res, next) {
   let idUsuario = req.params.id;
   let dados = req.body;

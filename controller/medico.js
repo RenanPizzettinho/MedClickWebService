@@ -61,13 +61,14 @@ function getAll(req, res, next) {
     },
     {$unwind: "$usuario"},
     {
-      $addFields: {
-        "nome": "$usuario.nome"
-      }
-    },
-    {
       $project: {
-        "usuario": 0
+        "_id": 1,
+        "crm": 1,
+        "especialidade": 1,
+        "atendeEm": 1,
+        "idUsuario": 1,
+        "diasAtendimentoDomicilio": 1,
+        "nome": "$usuario.nome"
       }
     },
     {$match: query},

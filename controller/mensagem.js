@@ -8,6 +8,7 @@ let mongoose = require('mongoose');
 let ObjectId = mongoose.Types.ObjectId;
 let _ = require('lodash');
 let Mensagem = require('../models/Mensagem');
+let Atendimento = require('../models/Atendimento');
 
 let api = {
   save: save,
@@ -50,7 +51,6 @@ function getAll(req, res, next) {
   }
 
   if (somenteEnviadas) {
-
     query['de'] = id;
   } else {
     somenteEnviadas = undefined;

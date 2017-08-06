@@ -7,6 +7,7 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let schema = new Schema({
+  abc : {type: String},
   crm: require('./../fields/field-string-min-2-char-obrigatorio-unico'),
   atendeEm: require('./../fields/field-string-min-2-char-obrigatorio'),
   especialidade: require('./../fields/field-string-min-2-char-obrigatorio'),

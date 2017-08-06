@@ -84,8 +84,8 @@ function getAll(req, res, next) {
 
     {
       $addFields: {
-        "nomeMedico": {$ifNull: ["$medico.nome", "<NOME NAO LOCALIZADO>"]},
-        "nomePaciente": {$ifNull: ["$paciente.nome", "<NOME NAO LOCALIZADO>"]},
+        "nomeMedico": {$ifNull: ["$medico.nome", "<MEDICO NAO LOCALIZADO>"]},
+        "nomePaciente": {$ifNull: ["$paciente.nome", "<PACIENTE NAO LOCALIZADO>"]},
       }
     },
     {

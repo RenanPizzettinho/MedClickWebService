@@ -86,6 +86,11 @@ function saveMedico(req, res, next) {
       }
 
       dados.idUsuario = _usuario._id;
+
+      if(_usuario.idMedico){
+      return updateMedico(req, res, next)
+      }
+
       Medico.create(dados)
         .then(function (_medico) {
 
@@ -130,9 +135,11 @@ function updateMedico(req, res, next) {
 
   let idUsuario = req.params.id;
   let dados = req.body;
+console.log("Dados", dados)
 
-  Medico.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true}).exec()
+  Medico.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true, overwrite: true}).exec()
     .then(function (_medico) {
+      console.log('aqui')
       return res.status(200).json({
         data: _medico
       })

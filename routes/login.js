@@ -4,7 +4,9 @@
 
 let express = require('express');
 let router = express.Router();
-let login = require('../controller/login');
+let path = require('path');
+
+let login = require(path.join(__dirname, '../controller/login'));
 
 module.exports = function (ROUTER) {
 

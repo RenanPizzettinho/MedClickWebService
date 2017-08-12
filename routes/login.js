@@ -13,7 +13,6 @@ module.exports = function (ROUTER) {
   router.post('/login', login.logar);
   router.post('/solicitar-senha', login.solicitarSenha);
   router.post('/redefinir-senha', login.redefinirSenha);
-
   router.get('/integracao', login.integracao)
 
   ROUTER.use('/', router);

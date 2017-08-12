@@ -6,10 +6,13 @@
 let mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-const db = process.env.BANCO || "127.0.0.1:27017/medclick";
+var db = process.env.BANCO || "127.0.0.1:27017/medclick";
+
 const options = {
   // useMongoClient:true,
-  db : {safe : true},
+  // db : {safe : true},
+  // db : {native_parser : true},
+  replset : {rs_name : "Keyword-PROD-shard-0"},
   server : {
     auto_reconnect: true,
     poolSize: 5
@@ -18,10 +21,10 @@ const options = {
 
 function conectaDB(uri){
 
-  mongoose.createConnection('mongodb://'+uri,options);
+  mongoose.connect('mongodb://'+uri,options);
 
   mongoose.connection.on('connected', function(){
-    console.log('Conectado ao mongodb em ' + uri);
+    console.log('Conectado ao mongodb');
   });
 
 

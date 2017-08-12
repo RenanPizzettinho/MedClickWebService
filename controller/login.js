@@ -12,8 +12,13 @@ let User = require('../models/Usuario');
 let api = {
   logar: logar,
   solicitarSenha: solicitarSenha,
-  redefinirSenha: redefinirSenha
+  redefinirSenha: redefinirSenha,
+  integracao : integracao
 };
+
+function integracao(req, res, next){
+  return res.json({nome: "Uiliam"})
+}
 
 function logar(req, res, next) {
 

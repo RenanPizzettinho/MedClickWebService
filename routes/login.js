@@ -6,7 +6,7 @@ let express = require('express');
 let router = express.Router();
 let path = require('path');
 
-let login = require(path.join(__dirname, '../controller/login'));
+let login = require('../controller/login');
 
 module.exports = function (ROUTER) {
 

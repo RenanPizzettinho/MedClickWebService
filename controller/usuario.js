@@ -76,14 +76,6 @@ function saveMedico(req, res, next) {
     return next(erro);
   }
 
-  Usuario.findByIdAndUpdate(idUsuario,{medico: dados}, {new: true}).exec()
-    .then(function(usuario){
-      return res.json(usuario)
-    }).catch(function(erro){
-      return next(erro)
-  })
-
-  return;
   Usuario.findById(idUsuario).exec()
     .then(function (_usuario) {
 
@@ -143,7 +135,6 @@ function updateMedico(req, res, next) {
 
   let idUsuario = req.params.id;
   let dados = req.body;
-console.log("Dados", dados)
 
   Medico.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true, overwrite: true}).exec()
     .then(function (_medico) {

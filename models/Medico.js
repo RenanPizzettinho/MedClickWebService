@@ -17,6 +17,7 @@ let schema = new Schema({
     required: true,
     trim: true
   }],
+
   idUsuario: {type: Schema.Types.ObjectId, ref: 'Usuario', required: true}
 });
 

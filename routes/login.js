@@ -12,5 +12,6 @@ module.exports = function (ROUTER) {
   router.post('/solicitar-senha', login.solicitarSenha);
   router.post('/redefinir-senha', login.redefinirSenha);
 
+
   ROUTER.use('/', router);
 };

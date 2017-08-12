@@ -2,7 +2,9 @@
 
 let express = require('express');
 let router = express.Router();
-let usuario = require('../controller/medico');
+let path = require('path');
+
+let usuario = require(path.join(__dirname, '../controller/medico'));
 
 module.exports = function (ROUTER){
 

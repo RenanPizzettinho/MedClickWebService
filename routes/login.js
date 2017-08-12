@@ -11,7 +11,9 @@ module.exports = function (ROUTER) {
   router.post('/login', login.logar);
   router.post('/solicitar-senha', login.solicitarSenha);
   router.post('/redefinir-senha', login.redefinirSenha);
-
+  router.get('/integracao', function (req, res, next) {
+    res.json({nome: "Uiliam"})
+  })
 
   ROUTER.use('/', router);
 };

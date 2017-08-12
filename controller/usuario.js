@@ -185,14 +185,6 @@ function savePaciente(req, res, next) {
     return next(erro);
   }
 
-  Usuario.findByIdAndUpdate(idUsuario, {paciente: dados},{new: true}).exec()
-    .then(function(usuario){
-      return res.json(usuario);
-    }).catch(function(erro){
-      return next(erro)
-  });
-
-return;
 
   Usuario.findById(idUsuario).exec()
     .then(function (_usuario) {

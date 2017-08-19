@@ -16,8 +16,16 @@ module.exports = function (ROUTER) {
   });
 
   router.post('/', function (req, res, next) {
+    console.log('@@@@   Post feito com sucesso..  @@@@');
 
+
+    console.log(req.body);
+
+    res.status(200).end()
   });
+
+
+
 
   ROUTER.use('/integracao', router);
 };

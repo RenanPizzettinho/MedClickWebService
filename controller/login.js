@@ -13,15 +13,23 @@ let api = {
   logar: logar,
   solicitarSenha: solicitarSenha,
   redefinirSenha: redefinirSenha,
-  integracao : integracao
+  getDadosIntegracao : getDadosIntegracao,
+  integracao: integracao
 };
 
+
 function integracao(req, res, next){
+  console.log('aquiii');
+  console.log('Recebendo azumio....', req.body);
+  res.end();
+}
+
+function getDadosIntegracao(req, res, next){
   return res.json({nome: "Uiliam"})
 }
 
 function logar(req, res, next) {
-
+console.log('logarrr')
   let dados = req.body;
 
   User.findOne({email: dados.email, senha: dados.senha}, {

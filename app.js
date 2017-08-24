@@ -20,18 +20,24 @@ app.use(bodyParser.json());
 
 
 consign({
-  cwd : __dirname,
-  extensions : ['.js']
+  cwd: __dirname,
+  extensions: ['.js']
 })
   .include('routes')
   .into(ROUTER);
 
-
 app.use('/api/v1', ROUTER);
+
+/*app.use('/api/v1/contexto/:idContexto',
+  function (req, res, next) {
+    console.log('contexto', req.params.idContexto);
+    req.contexto = req.params.idContexto;
+    next()
+  }, ROUTER);*/
 
 
 consign({
-  extensions : ['.js']
+  extensions: ['.js']
 })
   .include('config')
   .into(app);
@@ -39,7 +45,7 @@ consign({
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  let err = new Error('Not Found');
+  let err = new Error('Página não encontrada.');
   err.status = 404;
   next(err);
 });

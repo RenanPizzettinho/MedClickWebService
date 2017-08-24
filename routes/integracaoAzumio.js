@@ -55,7 +55,7 @@ module.exports = function (ROUTER) {
         }
 
         if (!paciente.get('integracaoAzumio.token')) {
-          return res.redirect(`https://api.azumio.com/login?redirect_uri=http://localhost:3000/api/v1/integracao/azumio/paciente/${idPaciente}/saveToken`);
+          return res.redirect(`https://api.azumio.com/login?redirect_uri=http://medclick.herokuapp.com/api/v1/integracao/azumio/paciente/${idPaciente}/saveToken`);
         }
         res.redirect("/")
 

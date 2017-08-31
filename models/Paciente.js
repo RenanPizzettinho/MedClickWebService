@@ -10,9 +10,14 @@ let schema = new Schema({
   possuiDiabete: require('../fields/field-boolean-obrigatorio'),
   possuiPressaoAlta: require('../fields/field-boolean-obrigatorio'),
   integracoes: {
-    azumio : {
-      token : String,
-      dados : mongoose.Schema.Types.Mixed,
+    azumio: {
+      token: String,
+      atualizadoEm: require('../fields/field-date-default-now'),
+      dados: [{
+        _id: false,
+        batimentos : Number,
+        dataLeitura : Date,
+      }]
     },
   },
   idUsuario: {type: Schema.Types.ObjectId, ref: 'Usuario', required: true}

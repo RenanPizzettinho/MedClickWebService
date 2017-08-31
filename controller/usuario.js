@@ -151,7 +151,7 @@ function update(req, res, next) {
   let id = req.params.id;
   let dados = req.body;
 
-  dados.dtNascimento = moment(req.body.dtNascimento, ["DD/MM/YYYY", "DD-MM-YYYY", "x", "X"]);
+  // dados.dtNascimento = moment(req.body.dtNascimento, ["DD/MM/YYYY", "DD-MM-YYYY", "x", "X"]);
   Usuario.findOneAndUpdate({'_id': id}, dados, {runValidators: true, new: true}).exec()
     .then(function (_usuario) {
 
@@ -240,7 +240,8 @@ function updatePaciente(req, res, next) {
         data: _paciente
       })
     }).catch(function (erro) {
-    next(erro);
+
+    return next(erro);
   })
 }
 

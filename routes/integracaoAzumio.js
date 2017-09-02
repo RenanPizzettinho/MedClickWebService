@@ -7,9 +7,9 @@
 let express = require('express');
 let router = express.Router();
 let request = require('request');
-let http = require('http');
 let Paciente = require('./../models/Paciente');
 let moment = require('moment');
+
 module.exports = function (ROUTER) {
   const pathAzumio = "https://api.azumio.com";
   const apiAzumio = "/api2";
@@ -23,203 +23,111 @@ module.exports = function (ROUTER) {
   const callbackAzumio = "/callback";
   const uriGetDados = `${pathAzumio}${apiAzumio}/checkins`;
 
-  //https://api.azumio.com/api2/authorize?redirect_uri=http://www.example.com&client_id=org.organization.example
-
-  // GET (/api/v1/integracao/azumio/paciente/:id/atualizar)
-  //atualizacao dados
-  // GET (/api/v1/integracao/azumio/paciente/:id/atualizar)
-
-  router.get('/paciente/:id/saveToken', function (req, res, next) {
-    console.log('chamando save token')
+  function verificaToken(req, res, next) {
     let idPaciente = req.params.id;
-    let token = req.query.oauth_token;
 
-    if (token) {
-      Paciente.findByIdAndUpdate(idPaciente, {"integracoes.azumio.token": token}, {new: true}).exec()
-        .then(function (paciente) {
-          res.redirect('/azumio/sucesso.html');
-        }).catch(function (erro) {
-        return next(erro);
-      })
-    } else {
-      res.redirect(`${apiLocal}${pathIntegracaoAzumio}/${idPaciente}`);
+    if(!idPaciente){
+      return next({message: "ID do paciente não informado", status: 403 })
     }
-  });
-
-  router.get('/paciente/:id', function (req, res, next) {
-    verificaIntegracao(req, res, next)
-      .then(function (dados) {
-
-        if (!res.finished) {
-          return res.redirect("/azumio/sucesso.html");
-        }
-      }).catch(function (erro) {
-
-      return next(erro)
-    })
-  });
-
-  router.get('/paciente/:id/atualizar', function (req, res, next) {
-
-
-    verificaIntegracao(req, res)
-      .then(function (dados) {
-
-        request({
-          method: "GET",
-          uri: uriGetDados,
-          qs: {
-            type: "heartrate"
-          },
-          headers: {
-            'Authorization': `OAuth ${dados.token}`
-          }
-        }, function (erro, response, body) {
-          if (erro) {
-            return next(erro);
-          }
-
-          if (response.statusCode === 200) {
-            try {
-
-              let retorno = JSON.parse(body);
-              let azumio = {
-                atualizadoEm: new Date(),
-                dados: []
-              };
-
-              let maiorData;
-              retorno.checkins.forEach(function (batimento) {
-                // if (!maiorData) {
-                //   maiorData = batimento.modified;
-                // } else {
-                //   maiorData = moment(maiorData, 'x').isAfter(moment(batimento.modified), 'x') ? maiorData : batimento.modified;
-                // }
-
-                azumio.dados.push({
-                  batimentos: batimento.value,
-                  dataLeitura: new Date(batimento.modified)
-                });
-
-                // console.log()
-
-                // dados.paciente.save();
-                // console.log('modified', moment(batimento.modified, 'x').format('DD/MM/YYYY HH:mm:ss'));
-                // console.log('timestam', moment(batimento.timestamp, 'x').format('DD/MM/YYYY HH:mm:ss'));
-                // console.log('creat', moment(batimento.created, 'x').format('DD/MM/YYYY HH:mm:ss'));
-              });
-
-              dados.paciente.integracoes.azumio = azumio.dados;
-              console.log(dados.paciente)
-
-              Paciente.findById(dados.paciente._id).exec()
-                .then(function (paciente) {
-                  paciente.integracoes.azumio.dados = azumio.dados;
-
-                  paciente.save({new: true})
-                    .then(function (newPaciente) {
-                      res.json(newPaciente)
-                    });
-                }).catch(function (erro) {
-
-              })
-              // console.log('maiorData', moment(maiorData, 'x').format('DD/MM/YYYY HH:mm:ssó'))
-            } catch (erro) {
-              // console.log(erro)
-              next({message: erro})
-            }
-
-
-          }
-        })
-
-      }).catch(function (erro) {
-      return next(erro)
-    })
-
-
-  });
-
-  router.post('/paciente/:id/callback', function (req, res, next) {
-
-    let idPaciente = req.params.id;
-
 
     Paciente.findById(idPaciente).exec()
       .then(function (paciente) {
-
-        console.log('Aqq', idPaciente)
-        console.log('Aqq', paciente)
-
-        let options = {
-          method: "GET",
-          url: `https://api.azumio.com/api2/checkins?type=heartrate&_headers={Authentication: OAuth ${paciente.integracoes.azumio.token}}`,
-        };
-
-
         if (!paciente) {
-          throw new Error('Paciente não encontrado.')
+          return next({message: "Paciente não localizado.", status: 403});
         }
 
-        request(options, function (err, response, body) {
+        if (!paciente.get('integracoes.azumio.token')) {
+          return res.redirect(`${pathAzumio}${pathLoginAzumio}${pathLocal}${apiLocal}${pathIntegracaoAzumio}/${idPaciente}/saveToken`);
+        } else {
+          req.paciente = paciente;
+          req.token = paciente.integracoes.azumio.token;
+          next();
+        }
+      })
+  }
 
-          if (response.statusCode === 200) {
-            console.log("atualizado dados via post azumio", new Date());
-            let dados = JSON.parse(body);
-            let batimentos = [];
-            if (dados.checkins) {
-              dados.checkins.forEach(function (v) {
-                batimentos.push({
-                  dataMedicao: new Date(v.modified),
-                  data: new Date(),
-                  valor: v.value
-                })
-              })
-            }
-            paciente.integracoes.azumio.dados = batimentos;
+  router.get('/paciente/:id/saveToken', function (req, res, next) {
 
-            console.log('Aq', paciente)
-            paciente.save({rewrite: true}).then(function () {
-              console.log('Paciente salvo com sucesso', paciente)
-            })
-            res.status(200).end();
-          }
-        })
+    let idPaciente = req.params.id;
+    let token = req.query.oauth_token;
+
+    Paciente.findByIdAndUpdate(idPaciente, {"integracoes.azumio.token": token}, {new: true}).exec()
+      .then(function (paciente) {
+
+        if (!paciente) {
+          return next({'message': 'Paciente não encontrado', "status": 404})
+        }
+
+        if (token) {
+          return res.redirect('/azumio/sucesso.html');
+        } else {
+          res.redirect(`${apiLocal}${pathIntegracaoAzumio}/${idPaciente}`);
+        }
+
       }).catch(function (erro) {
       return next(erro);
-    });
-    // https://api.azumio.com/api2/checkins?type=heartrate&_headers={Authentication: OAuth 130182408332d15386841d7e677101ec51877d23a0636bd9352}
-    // res.end();
+    })
+
   });
 
+  router.get('/paciente/:id', verificaToken, function (req, res, next) {
 
-  router.get('/', function (req, res, next) {
-    console.log("caiu no /");
-    let token = req.query.oauth_token;
-    console.log('tolen', token)
-    res.send('OK OK')
-  })
+    if (req.paciente) {
+      return res.redirect("/azumio/sucesso.html");
+    }
+
+  });
+
+  router.get('/paciente/:id/atualizar', verificaToken, function (req, res, next) {
+
+    if (req.paciente) {
+      request({
+        method: "GET",
+        uri: uriGetDados,
+        qs: {
+          type: "heartrate"
+        },
+        headers: {
+          'Authorization': `OAuth ${req.token}`
+        }
+      }, function (erro, response, body) {
+        if (erro) {
+          return next(erro);
+        }
+
+        if (response.statusCode === 200) {
+          try {
+
+            let retorno = JSON.parse(body);
+            let azumio = {
+              atualizadoEm: new Date(),
+              dados: []
+            };
+
+            retorno.checkins.forEach(function (batimento) {
+              azumio.dados.push({
+                batimentos: batimento.value,
+                dataLeitura: new Date(batimento.modified)
+              });
+            });
+
+            req.paciente.integracoes.azumio.dados = azumio.dados;
+
+            req.paciente.save({new: true})
+              .then(function (newPaciente) {
+                res.json(newPaciente)
+              });
+          } catch (erro) {
+            next({message: erro})
+          }
+        }
+      })
+    }
+  });
+
+  router.get('/', verificaToken);
+
   ROUTER.use('/integracao/azumio', router);
-
-  function verificaIntegracao(req, res, next) {
-    return new Promise(function (resolve, reject) {
-
-      let idPaciente = req.params.id;
-      Paciente.findById(idPaciente).exec()
-        .then(function (paciente) {
-          if (!paciente) {
-            return reject({message: "Paciente não localizado.", status: 403});
-          }
-
-          if (!paciente.get('integracoes.azumio.token')) {
-            resolve();
-            return res.redirect(`${pathAzumio}${pathLoginAzumio}${pathLocal}${apiLocal}${pathIntegracaoAzumio}/${idPaciente}/saveToken`);
-          } else {
-            return resolve({token: paciente.integracoes.azumio.token, paciente: paciente});
-          }
-        }, reject);
-    })
-  }
 
 };
 

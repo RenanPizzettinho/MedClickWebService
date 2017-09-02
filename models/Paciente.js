@@ -11,8 +11,8 @@ let schema = new Schema({
   possuiPressaoAlta: require('../fields/field-boolean-obrigatorio'),
   integracoes: {
     azumio: {
-      token: String,
-      atualizadoEm: require('../fields/field-date-default-now'),
+      token: require('../fields/field-string'),
+      atualizadoEm: require('../fields/field-date-with-parser'),
       dados: [{
         _id: false,
         batimentos : Number,

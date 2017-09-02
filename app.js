@@ -35,7 +35,6 @@ app.use('/api/v1', ROUTER);
     next()
   }, ROUTER);*/
 
-
 consign({
   extensions: ['.js']
 })

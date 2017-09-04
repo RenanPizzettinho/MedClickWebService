@@ -9,6 +9,10 @@ let Schema = mongoose.Schema;
 let schema = new Schema({
   possuiDiabete: require('../fields/field-boolean-obrigatorio'),
   possuiPressaoAlta: require('../fields/field-boolean-obrigatorio'),
+  localizacao : {
+    type: [Number],
+    index: '2d'
+  },
   integracoes: {
     azumio: {
       token: require('../fields/field-string'),

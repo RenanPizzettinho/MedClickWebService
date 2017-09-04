@@ -19,11 +19,15 @@ let api = {
 };
 
 function getAll(req, res, next) {
-  let cidade = req.query.cidade;
+  let atendeEm = req.query.atendeEm;
   let especialidade = req.query.especialidade;
   let nome = req.query.nome;
   let q = req.query.q;
 
+  let posicao = [
+    Number(req.query.longitude) || 0,
+    Number(req.query.latitude) || 0
+  ];
 
   let query = {};
 
@@ -34,23 +38,42 @@ function getAll(req, res, next) {
       {"especialidade": new RegExp(q, 'i')}
     ]
   }
-  // query['idMedico'] = {$exists: true};
+// query['idMedico'] = {$exists: true};
   if (!_.isEmpty(nome)) {
     query['nome'] = new RegExp(nome, 'i');
   }
 
-  if (!_.isEmpty(cidade)) {
-    query['atendeEm'] = new RegExp(cidade, 'i');
+  if (!_.isEmpty(atendeEm)) {
+    query['atendeEm'] = new RegExp(atendeEm, 'i');
   }
 
   if (!_.isEmpty(especialidade)) {
     query['especialidade'] = new RegExp(especialidade, 'i');
   }
 
-  console.log("quer", query)
-
+    console.log('query', query)
   Medico.aggregate([
 
+    {
+      "$geoNear": {
+        "near": {
+          "type": "Point",
+          "coordinates": posicao // [longitude, latitude]
+        },
+        "distanceField": "distancia",
+        "limit": 100000,
+        "spherical": true
+      }
+    },
+    {
+      "$redact": {
+        "$cond": {
+          "if": {"$lt": ["$distancia", "$distanciaMaxima"]},
+          "then": "$$KEEP",
+          "else": "$$PRUNE"
+        }
+      }
+    },
     {
       $lookup: {
         from: 'usuarios',
@@ -68,7 +91,8 @@ function getAll(req, res, next) {
         "atendeEm": 1,
         "idUsuario": 1,
         "diasAtendimentoDomicilio": 1,
-        "nome": "$usuario.nome"
+        "nome": "$usuario.nome",
+        "distancia": 1
       }
     },
     {$match: query},
@@ -92,7 +116,44 @@ function getAll(req, res, next) {
    next(erro);
    })*/
 }
-;
+
+function getByLocation(req, res, next) {
+  let posicao = [
+    req.body.posicao.longitude || 0,
+    req.body.posicao.latitude || 0
+  ];
+
+
+  Medico.aggregate(
+    [
+      {
+        "$geoNear": {
+          "near": {
+            "type": "Point",
+            "coordinates": posicao // [longitude, latitude]
+          },
+          "distanceField": "distancia",
+          "limit": 100000,
+          "spherical": true
+        }
+      },
+      {
+        "$redact": {
+          "nomes": "$nome",
+          "$cond": {
+            "if": {"$lt": ["$distancia", "$distanciaMaxima"]},
+            "then": "$$KEEP",
+            "else": "$$PRUNE"
+          }
+        }
+      },
+    ], function (err, results) {
+      // Work with results in here
+      console.log(results)
+    }
+  );
+
+}
 
 
 module.exports = api;

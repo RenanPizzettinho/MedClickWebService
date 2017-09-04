@@ -18,11 +18,7 @@ let schema = new Schema({
   dtNascimento: require('./../fields/field-date-with-parser'),
   idMedico: {type: Schema.Types.ObjectId, ref: 'Medico'},
   idPaciente: {type: Schema.Types.ObjectId, ref: 'Paciente'},
-  criadoEm: require('./../fields/field-criado-em'),
-  location : {
-    type: [Number],
-    index: '2d'
-  }
+  criadoEm: require('./../fields/field-criado-em')
 });
 
 module.exports = mongoose.model('Usuario', schema, 'usuarios');

@@ -7,15 +7,14 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let schema = new Schema({
-  abc: {type: String},
-  crm: require('./../fields/field-string'),
-  estado: require('./../fields/field-string'),
-  distancia: require('./../fields/field-number'),
+  crm: require('./../fields/field-string-obrigatorio'),
+  estado: require('./../fields/field-string-obrigatorio'),
   atendeEm: require('./../fields/field-string-min-2-char-obrigatorio'),
   especialidade: require('./../fields/field-string-min-2-char-obrigatorio'),
-  localizacao: require('./../fields/field-localizacao'),
   diasAtendimentoDomicilio: [require('./../fields/field-enum-dia-semana')],
-  idUsuario: {type: Schema.Types.ObjectId, ref: 'Usuario', required: true}
+  idUsuario: {type: Schema.Types.ObjectId, ref: 'Usuario', required: true},
+  localizacao: require('./../fields/field-localizacao'),
+  distanciaMaxima: require('./../fields/field-number')
 });
 
 module.exports = mongoose.model('Medico', schema);
@@ -98,8 +97,6 @@ var User = mongoose.model("User", userSchema, "teste_copy");
 //   }
 // }).exec().then(function(d){console.log(d)})
 // user1.save();
-
-
 
 
 /*

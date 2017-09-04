@@ -41,7 +41,7 @@ function save(req, res, next) {
   });
 }
 
-function get (req, res, next) {
+function get(req, res, next) {
   let id = req.params.id;
 
   Usuario.findById(id, {senha: false})
@@ -63,12 +63,13 @@ function getAll(req, res, next) {
     }).catch(function (erro) {
     next(erro);
   })
-};
+}
 
 function saveMedico(req, res, next) {
 
   let dados = req.body;
   let idUsuario = req.params.id;
+
 
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     let erro = new Error('O usuário informado é inválido');
@@ -87,8 +88,18 @@ function saveMedico(req, res, next) {
 
       dados.idUsuario = _usuario._id;
 
-      if(_usuario.idMedico){
-      return updateMedico(req, res, next)
+
+      if (_usuario.idMedico) {
+        return updateMedico(req, res, next)
+      }
+
+      if (dados.localizacao) {
+        let localTemp = dados.localizacao;
+        delete dados.localizacao;
+        dados.localizacao = [
+          localTemp.longitude,
+          localTemp.latitude
+        ];
       }
 
       Medico.create(dados)
@@ -103,7 +114,7 @@ function saveMedico(req, res, next) {
           })
 
         }).catch(function (erro) {
-        // return res.json(erro)
+
         return next(erro)
       });
     }).catch(function (erro) {
@@ -136,9 +147,17 @@ function updateMedico(req, res, next) {
   let idUsuario = req.params.id;
   let dados = req.body;
 
-  Medico.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true, overwrite: true}).exec()
+  if (dados.localizacao) {
+    let localTemp = dados.localizacao;
+    delete dados.localizacao;
+    dados.localizacao = [
+      localTemp.longitude,
+      localTemp.latitude
+    ];
+  }
+
+  Medico.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true, overwrite: true, runValidators: true}).exec()
     .then(function (_medico) {
-      console.log('aqui')
       return res.status(200).json({
         data: _medico
       })

@@ -11,11 +11,11 @@ let mongoose = require('mongoose');
 let ObjectId = mongoose.Types.ObjectId;
 let _ = require('lodash');
 
-let Usuario = require('../models/Usuario');
 let Medico = require('../models/Medico');
 
 let api = {
   getAll: getAll,
+  getById : getById
 };
 
 function getAll(req, res, next) {
@@ -23,6 +23,7 @@ function getAll(req, res, next) {
   let especialidade = req.query.especialidade;
   let nome = req.query.nome;
   let q = req.query.q;
+  let idMedicoAtual = ObjectId.isValid(req.header('idMedico')) ? ObjectId(req.header('idMedico')) : "";
 
   let posicao = [
     Number(req.query.longitude) || 0,
@@ -62,6 +63,9 @@ function getAll(req, res, next) {
         "limit": 100000,
         "spherical": true
       }
+    },
+    {
+      $match : {"_id" :{$ne : idMedicoAtual}}
     },
     {
       "$redact": {
@@ -165,5 +169,26 @@ function getByLocation(req, res, next) {
 
 }
 
+function getById(req, res, next) {
+  let id = req.params.id;
+
+  Medico.findById(id).exec()
+    .then(function(medico){
+      if(medico.localizacao && Array.isArray(medico.localizacao)){
+        medico = medico.toObject();
+        let temp = Object.assign({}, medico.localizacao);
+
+        medico.localizacao = {
+          longitude : temp[0],
+          latitude : temp[1]
+        }
+      }
+      return res.json({
+        data : medico
+      });
+    }).catch(function(erro){
+      next(erro);
+  })
+}
 
 module.exports = api;

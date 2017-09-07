@@ -94,12 +94,12 @@ function saveMedico(req, res, next) {
       }
 
       if (dados.localizacao) {
-        let localTemp = dados.localizacao;
-        delete dados.localizacao;
+        let temp = Object.assign({}, dados.localizacao);
+
         dados.localizacao = [
-          localTemp.longitude,
-          localTemp.latitude
-        ];
+          temp.longitude,
+          temp.latitude
+        ]
       }
 
       Medico.create(dados)
@@ -125,7 +125,7 @@ function saveMedico(req, res, next) {
 function getMedico(req, res, next) {
   let idUsuario = req.params.id;
 
-  Medico.find({'idUsuario': idUsuario}).exec()
+  Medico.findOne({'idUsuario': idUsuario}).exec()
     .then(function (_medico) {
       if (!_medico) {
         return res.status(200).json({
@@ -133,6 +133,16 @@ function getMedico(req, res, next) {
         })
       }
 
+      if (_medico.get('localizacao')) {
+        _medico = _medico.toObject();
+
+        let temp = Object.assign({}, _medico.localizacao);
+
+        _medico.localizacao = {
+          longitude: temp[0],
+          latitude: temp[1]
+        }
+      }
       return res.status(200).json({
         data: _medico
       })
@@ -148,11 +158,11 @@ function updateMedico(req, res, next) {
   let dados = req.body;
 
   if (dados.localizacao) {
-    let localTemp = dados.localizacao;
-    delete dados.localizacao;
+    let temp = Object.assign({}, dados.localizacao);
+
     dados.localizacao = [
-      localTemp.longitude,
-      localTemp.latitude
+      temp.longitude,
+      temp.latitude
     ];
   }
 
@@ -195,6 +205,13 @@ function savePaciente(req, res, next) {
     return next(erro);
   }
 
+  if (dados.localizacao) {
+    let temp = Object.assign({}, dados.localizacao);
+    dados.localizacao = [
+      temp.longitude,
+      temp.latitude,
+    ]
+  }
 
   Usuario.findById(idUsuario).exec()
     .then(function (_usuario) {
@@ -232,14 +249,27 @@ function savePaciente(req, res, next) {
 function getPaciente(req, res, next) {
   let idUsuario = req.params.id;
 
-  Paciente.find({'idUsuario': idUsuario}).exec()
+  Paciente.findOne({'idUsuario': idUsuario}).exec()
     .then(function (_paciente) {
+
       if (!_paciente) {
         return res.status(200).json({
           data: {}
         })
       }
 
+
+      if (_paciente.get('localizacao')) {
+
+        _paciente = _paciente.toObject();
+
+        let temp = Object.assign({}, _paciente.localizacao);
+
+        _paciente.localizacao = {
+          longitude: temp[0],
+          latitude: temp[1]
+        }
+      }
       return res.status(200).json({
         data: _paciente
       })
@@ -252,6 +282,14 @@ function getPaciente(req, res, next) {
 function updatePaciente(req, res, next) {
   let idUsuario = req.params.id;
   let dados = req.body;
+
+  if (dados.localizacao) {
+    let temp = Object.assign({}, dados.localizacao);
+    dados.localizacao = [
+      temp.longitude,
+      temp.latitude,
+    ]
+  }
 
   Paciente.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true}).exec()
     .then(function (_paciente) {

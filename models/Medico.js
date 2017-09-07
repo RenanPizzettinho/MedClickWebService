@@ -6,6 +6,9 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
+function obfuscate (cc) {
+  return '****-****-****-' + cc.slice(cc.length-4, cc.length);
+}
 let schema = new Schema({
   crm: require('./../fields/field-string-obrigatorio'),
   estado: require('./../fields/field-string-obrigatorio'),
@@ -14,8 +17,12 @@ let schema = new Schema({
   diasAtendimentoDomicilio: [require('./../fields/field-enum-dia-semana')],
   idUsuario: {type: Schema.Types.ObjectId, ref: 'Usuario', required: true},
   localizacao: require('./../fields/field-localizacao'),
-  distanciaMaxima: require('./../fields/field-number')
+  endereco : require('./../fields/field-string'),
+  distanciaMaxima: require('./../fields/field-number'),
 });
+
+// schema.set('toObject', { getters: true })
+// schema.set('toJSON', { getters: true });
 
 module.exports = mongoose.model('Medico', schema);
 /*

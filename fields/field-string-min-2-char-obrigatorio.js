@@ -3,11 +3,13 @@
  */
 'use strict';
 
+
 const Field = {
   type: String,
   required: true,
   trim: true,
   minlength: 2
-}
+};
+
 
 module.exports = Field;

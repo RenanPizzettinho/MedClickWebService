@@ -51,9 +51,7 @@ function getAll(req, res, next) {
     query['especialidade'] = new RegExp(especialidade, 'i');
   }
 
-    console.log('query', query)
   Medico.aggregate([
-
     {
       "$geoNear": {
         "near": {
@@ -87,20 +85,32 @@ function getAll(req, res, next) {
       $project: {
         "_id": 1,
         "crm": 1,
+        "estado": 1,
         "especialidade": 1,
         "atendeEm": 1,
         "idUsuario": 1,
         "diasAtendimentoDomicilio": 1,
         "nome": "$usuario.nome",
-        "distancia": 1
+        "distancia": 1,
+        "localizacao": {
+          $reduce: {
+            input: "$localizacao",
+            initialValue: "",
+            in: {
+              longitude: {$arrayElemAt: ["$localizacao", 0]},
+              latitude: {$arrayElemAt: ["$localizacao", -1]},
+            }
+          }
+        },
+        "endereco": 1
       }
     },
     {$match: query},
 
   ]).exec()
-    .then(function (_usuarios) {
+    .then(function (_medicos) {
       return res.status(200).json({
-        data: _usuarios
+        data: _medicos
       })
     }).catch(function (erro) {
     next(erro);

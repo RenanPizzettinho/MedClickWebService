@@ -3,6 +3,8 @@
  */
 'use strict';
 
+
+
 const Field = {
   type: [require('./../fields/field-number')], //longitude  x  latitude
   index: '2dsphere'

@@ -166,7 +166,7 @@ function updateMedico(req, res, next) {
     ];
   }
 
-  Medico.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true, overwrite: true, runValidators: true}).exec()
+  Medico.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true}).exec()
     .then(function (_medico) {
       return res.status(200).json({
         data: _medico
@@ -291,7 +291,7 @@ function updatePaciente(req, res, next) {
     ]
   }
 
-  Paciente.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true}).exec()
+  Paciente.findOneAndUpdate({idUsuario: idUsuario}, dados, {new: true, runValidators: true}).exec()
     .then(function (_paciente) {
       return res.status(200).json({
         data: _paciente

@@ -21,9 +21,7 @@ let api = {
 
 
 function save(req, res, next) {
-
   let dados = req.body;
-
 
   Atendimento.create(dados)
     .then(function (_atendimento) {

@@ -29,7 +29,6 @@ function getAll(req, res, next) {
     Number(req.query.longitude) || 0,
     Number(req.query.latitude) || 0
   ];
-
   let query = {};
 
   if (!_.isEmpty(q)) {

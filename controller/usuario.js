@@ -88,7 +88,6 @@ function saveMedico(req, res, next) {
 
       dados.idUsuario = _usuario._id;
 
-
       if (_usuario.idMedico) {
         return updateMedico(req, res, next)
       }
@@ -205,14 +204,6 @@ function savePaciente(req, res, next) {
     return next(erro);
   }
 
-  if (dados.localizacao) {
-    let temp = Object.assign({}, dados.localizacao);
-    dados.localizacao = [
-      temp.longitude,
-      temp.latitude,
-    ]
-  }
-
   Usuario.findById(idUsuario).exec()
     .then(function (_usuario) {
 
@@ -223,6 +214,19 @@ function savePaciente(req, res, next) {
       }
 
       dados.idUsuario = _usuario._id;
+
+      if (_usuario.idPaciente) {
+
+        return updatePaciente(req, res, next)
+      }
+
+      if (dados.localizacao) {
+        let temp = Object.assign({}, dados.localizacao);
+        dados.localizacao = [
+          temp.longitude,
+          temp.latitude,
+        ]
+      }
 
       Paciente.create(dados)
         .then(function (_paciente) {
@@ -283,11 +287,12 @@ function updatePaciente(req, res, next) {
   let idUsuario = req.params.id;
   let dados = req.body;
 
+
   if (dados.localizacao) {
     let temp = Object.assign({}, dados.localizacao);
     dados.localizacao = [
       temp.longitude,
-      temp.latitude,
+      temp.latitude
     ]
   }
 

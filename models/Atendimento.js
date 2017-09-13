@@ -9,7 +9,7 @@ let ObjectId = mongoose.Schema.Types.ObjectId;
 
 
 let schema = new Schema({
-  idMedico: {type: ObjectId, ref: "Medico"},
+  idMedico: {type: ObjectId, required: true, ref: "Medico"},
   idPaciente: {type: ObjectId, required: true, ref: 'Paciente'},
   descricaoNecessidade: {type: String, required: true},
   localConsulta: require('./../fields/field-string-min-2-char-obrigatorio'),
@@ -21,7 +21,7 @@ let schema = new Schema({
     required: true,
     trim: true
   },
-  motivoCanelamento: {type: String},
+  motivoCancelamento: {type: String},
   dataRegistro: {type: Date, required: true, default: Date.now}
 });
 

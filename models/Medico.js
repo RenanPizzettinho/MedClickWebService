@@ -18,7 +18,4 @@ let schema = new Schema({
   distanciaMaxima: require('./../fields/field-number'),
 });
 
-// schema.set('toObject', { getters: true })
-// schema.set('toJSON', { getters: true });
-
 module.exports = mongoose.model('Medico', schema);

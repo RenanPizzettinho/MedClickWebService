@@ -12,7 +12,7 @@ let schema = new Schema({
   idMedico: {type: ObjectId, required: true, ref: "Medico"},
   idPaciente: {type: ObjectId, required: true, ref: 'Paciente'},
   descricaoNecessidade: {type: String, required: true},
-  localConsulta: require('./../fields/field-string-min-2-char-obrigatorio'),
+  complemento: require('./../fields/field-string-min-2-char-obrigatorio'),
   dataConsulta: require('./../fields/field-date-with-parser'),
   feedbackConsulta: require('./../fields/field-string-min-2-char'),
   situacao: {

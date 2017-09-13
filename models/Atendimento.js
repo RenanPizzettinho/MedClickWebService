@@ -11,18 +11,15 @@ let ObjectId = mongoose.Schema.Types.ObjectId;
 let schema = new Schema({
   idMedico: {type: ObjectId, required: true, ref: "Medico"},
   idPaciente: {type: ObjectId, required: true, ref: 'Paciente'},
-  descricaoNecessidade: {type: String, required: true},
-  complemento: require('./../fields/field-string-min-2-char-obrigatorio'),
+  descricaoNecessidade: require('./../fields/field-string-obrigatorio'),
+  localizacao: require('./../fields/field-localizacao-obrigatorio'),
+  endereco: require('./../fields/field-string-obrigatorio'),
+  complemento: require('./../fields/field-string'),
   dataConsulta: require('./../fields/field-date-with-parser'),
   feedbackConsulta: require('./../fields/field-string-min-2-char'),
-  situacao: {
-    type: String, enum: ["EM_ABERTO", "CONFIRMADO", "CANCELADO", "ATENDIDO"],
-    default: 'EM_ABERTO',
-    required: true,
-    trim: true
-  },
-  motivoCancelamento: {type: String},
-  dataRegistro: {type: Date, required: true, default: Date.now}
+  situacao: require('./../fields/field-enum-situacao'),
+  motivoCancelamento: require('./../fields/field-string'),
+  dataRegistro: require('./../fields/field-date-default-now')
 });
 
 

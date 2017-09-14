@@ -19,6 +19,15 @@ let api = {
 function save(req, res, next) {
   let dados = req.body;
 
+  if (dados.localizacao) {
+    let temp = Object.assign({}, dados.localizacao);
+
+    dados.localizacao = [
+      temp.longitude,
+      temp.latitude
+    ]
+  }
+
   Atendimento.create(dados)
     .then(function (_atendimento) {
 
@@ -103,6 +112,16 @@ function update(req, res, next) {
   let dados = req.body;
 
   // Atendimento.findOneAndUpdate({_id: idAtendimento}, dados).update().exec()
+
+  if (dados.localizacao) {
+    let temp = Object.assign({}, dados.localizacao);
+
+    dados.localizacao = [
+      temp.longitude,
+      temp.latitude
+    ]
+  }
+
   Atendimento.findOneAndUpdate({_id: idAtendimento}, dados, {new: true, runValidators: true}).exec()
     .then(function (_atendimento) {
       res.json({

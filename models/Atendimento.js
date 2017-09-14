@@ -21,7 +21,7 @@ let schema = new Schema({
     cep: require('./../fields/field-string'),
   },
   complemento: require('./../fields/field-string'),
-  dataConsulta: require('./../fields/field-date-with-parser'),
+  dataConsulta: require('./../fields/field-date-with-parser-obrigatorio'),
   feedbackConsulta: require('./../fields/field-string-min-2-char'),
   situacao: require('./../fields/field-enum-situacao'),
   motivoCancelamento: require('./../fields/field-string'),

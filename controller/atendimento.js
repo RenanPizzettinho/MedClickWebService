@@ -91,13 +91,16 @@ function getAll(req, res, next) {
     },
     {
       $project: {
-        "complemento" : 1,
-        "descricaoNecessidade": 1,
-        "idPaciente": 1,
         "idMedico": 1,
-        "dataRegistro": 1,
-        "motivoCancelamento": 1,
+        "idPaciente": 1,
+        "descricaoNecessidade": 1,
+        "endereco" : 1,
+        "complemento" : 1,
+        "dataConsulta" : 1,
+        "feedbackConsulta" : 1,
         "situacao": 1,
+        "motivoCancelamento": 1,
+        "dataRegistro" : 1,
         "nomeMedico": 1,
         "nomePaciente": 1,
         "localizacao": {

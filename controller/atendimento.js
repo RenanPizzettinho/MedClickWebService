@@ -91,8 +91,25 @@ function getAll(req, res, next) {
     },
     {
       $project: {
-        "medico": 0,
-        "paciente": 0
+        "complemento" : 1,
+        "descricaoNecessidade": 1,
+        "idPaciente": 1,
+        "idMedico": 1,
+        "dataRegistro": 1,
+        "motivoCancelamento": 1,
+        "situacao": 1,
+        "nomeMedico": 1,
+        "nomePaciente": 1,
+        "localizacao": {
+          $reduce: {
+            input: "$localizacao",
+            initialValue: "",
+            in: {
+              longitude: {$arrayElemAt: ["$localizacao", 0]},
+              latitude: {$arrayElemAt: ["$localizacao", -1]},
+            }
+          }
+        }
       },
     }
   ]).exec()

@@ -6,8 +6,8 @@ let atendimento = require('../controller/atendimento');
 
 module.exports = function (ROUTER) {
 
-  router.get('/:idContexto', atendimento.getAll);
   router.post('/', atendimento.save);
+  router.get('/:idContexto', atendimento.getAll);
   router.put('/:idAtendimento', atendimento.update);
 
   ROUTER.use('/atendimentos', router);

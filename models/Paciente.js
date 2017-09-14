@@ -10,7 +10,13 @@ let schema = new Schema({
   possuiDiabete: require('../fields/field-boolean-obrigatorio'),
   possuiPressaoAlta: require('../fields/field-boolean-obrigatorio'),
   localizacao: require('./../fields/field-localizacao'),
-  endereco : require('./../fields/field-string'),
+  endereco : {
+    rua : require('./../fields/field-string'),
+    cidade: require('./../fields/field-string'),
+    estado : require('./../fields/field-string'),
+    pais : require('./../fields/field-string'),
+    cep: require('./../fields/field-string'),
+  },
   integracoes: {
     azumio: {
       token: require('../fields/field-string'),

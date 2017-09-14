@@ -6,7 +6,7 @@ let path = require('path');
 
 let paciente = require(path.join(__dirname, '../controller/paciente'));
 
-module.exports = function (ROUTER){
+module.exports = function (ROUTER) {
 
   router.get('/:id', paciente.getById);
 

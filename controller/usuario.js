@@ -1,9 +1,6 @@
 /**
  * Created by Uiliam on 29/05/2017.
  */
-/**
- * Created by Uiliam on 29/05/2017.
- */
 
 "use strict";
 
@@ -16,10 +13,10 @@ let Medico = require('../models/Medico');
 let Paciente = require('../models/Paciente');
 
 let api = {
-  save: save,
-  get: get,
-  getAll: getAll,
-  update: update,
+  saveUsuario: saveUsuario,
+  getUsuario: getUsuario,
+  getAllUsuario: getAllUsuario,
+  updateUsuario: updateUsuario,
   saveMedico: saveMedico,
   getMedico: getMedico,
   updateMedico: updateMedico,
@@ -28,7 +25,7 @@ let api = {
   updatePaciente: updatePaciente
 };
 
-function save(req, res, next) {
+function saveUsuario(req, res, next) {
   let dados = req.body;
 
   Usuario.create(dados)
@@ -41,7 +38,7 @@ function save(req, res, next) {
   });
 }
 
-function get(req, res, next) {
+function getUsuario(req, res, next) {
   let id = req.params.id;
 
   Usuario.findById(id, {senha: false})
@@ -54,7 +51,7 @@ function get(req, res, next) {
   })
 };
 
-function getAll(req, res, next) {
+function getAllUsuario(req, res, next) {
   Usuario.find({}, {senha: false, __v: false}).exec()
     .then(function (users) {
       return res.status(200).json({
@@ -63,6 +60,24 @@ function getAll(req, res, next) {
     }).catch(function (erro) {
     next(erro);
   })
+}
+
+function updateUsuario(req, res, next) {
+  let id = req.params.id;
+  let dados = req.body;
+
+  // dados.dtNascimento = moment(req.body.dtNascimento, ["DD/MM/YYYY", "DD-MM-YYYY", "x", "X"]);
+  Usuario.findOneAndUpdate({'_id': id}, dados, {runValidators: true, new: true}).exec()
+    .then(function (_usuario) {
+
+      return res.status(200).json({
+        data: _usuario
+      });
+
+    }).catch(function (erro) {
+    next(erro);
+  })
+
 }
 
 function saveMedico(req, res, next) {
@@ -173,24 +188,6 @@ function updateMedico(req, res, next) {
     }).catch(function (erro) {
     next(erro);
   })
-}
-
-function update(req, res, next) {
-  let id = req.params.id;
-  let dados = req.body;
-
-  // dados.dtNascimento = moment(req.body.dtNascimento, ["DD/MM/YYYY", "DD-MM-YYYY", "x", "X"]);
-  Usuario.findOneAndUpdate({'_id': id}, dados, {runValidators: true, new: true}).exec()
-    .then(function (_usuario) {
-
-      return res.status(200).json({
-        data: _usuario
-      });
-
-    }).catch(function (erro) {
-    next(erro);
-  })
-
 }
 
 function savePaciente(req, res, next) {

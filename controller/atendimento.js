@@ -5,20 +5,16 @@
 "use strict";
 
 let mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
-let async = require('async');
+
 let ObjectId = mongoose.Types.ObjectId;
 let _ = require('lodash');
 let Atendimento = require('../models/Atendimento');
-let Usuario = require('../models/Usuario');
-
 
 let api = {
   save: save,
   getAll: getAll,
   update: update
 };
-
 
 function save(req, res, next) {
   let dados = req.body;
@@ -48,10 +44,8 @@ function getAll(req, res, next) {
     {'idMedico': ObjectId(id)}
   ];
 
-
   !_.isEmpty(idPaciente) ? query["idPaciente"] = ObjectId(idPaciente) : '';
   !_.isEmpty(idMedico) ? query["idMedico"] = ObjectId(idPMedico) : '';
-
 
   if (!_.isEmpty(situacao)) {
     query['situacao'] = situacao;
@@ -108,7 +102,8 @@ function update(req, res, next) {
   let idAtendimento = req.params.idAtendimento;
   let dados = req.body;
 
-  Atendimento.findOneAndUpdate({_id: idAtendimento}, dados).update().exec()
+  // Atendimento.findOneAndUpdate({_id: idAtendimento}, dados).update().exec()
+  Atendimento.findOneAndUpdate({_id: idAtendimento}, dados, {new: true, runValidators: true}).exec()
     .then(function (_atendimento) {
       res.json({
         data: _atendimento

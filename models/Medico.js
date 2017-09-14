@@ -14,7 +14,13 @@ let schema = new Schema({
   diasAtendimentoDomicilio: [require('./../fields/field-enum-dia-semana')],
   idUsuario: {type: Schema.Types.ObjectId, ref: 'Usuario', required: true},
   localizacao: require('./../fields/field-localizacao'),
-  endereco : require('./../fields/field-string'),
+  endereco : {
+    rua : require('./../fields/field-string'),
+    cidade: require('./../fields/field-string'),
+    estado : require('./../fields/field-string'),
+    pais : require('./../fields/field-string'),
+    cep: require('./../fields/field-string'),
+  },
   distanciaMaxima: require('./../fields/field-number'),
 });
 

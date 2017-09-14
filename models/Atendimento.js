@@ -13,7 +13,13 @@ let schema = new Schema({
   idPaciente: {type: ObjectId, required: true, ref: 'Paciente'},
   descricaoNecessidade: require('./../fields/field-string-obrigatorio'),
   localizacao: require('./../fields/field-localizacao-obrigatorio'),
-  endereco: require('./../fields/field-string-obrigatorio'),
+  endereco : {
+    rua : require('./../fields/field-string'),
+    cidade: require('./../fields/field-string'),
+    estado : require('./../fields/field-string'),
+    pais : require('./../fields/field-string'),
+    cep: require('./../fields/field-string'),
+  },
   complemento: require('./../fields/field-string'),
   dataConsulta: require('./../fields/field-date-with-parser'),
   feedbackConsulta: require('./../fields/field-string-min-2-char'),
@@ -24,32 +30,3 @@ let schema = new Schema({
 
 
 module.exports = mongoose.model('Atendimento', schema, 'atendimentos');
-
-
-
-
-// schema.pre('update', function (next) {
-// let self = this;
-// console.log('new idmedico', self._update.idMedico)
-//  console.log('old', this.isNew)
-//
-//  console.log('aaa', this._idMedico);
-// next()
-
-// if(this.isModified('idMedico') || this.isModified('idMedico')){
-//   next(new Error('Os campos \'idMedico\' e \'idPaciente\' não podem ser alterados.'));
-// }
-//
-//   Usuario.find().or([
-//     {'paciente': {$exists: true}},
-//     {'medico': {$exists: true}},
-//   ]).exec()
-//     .then(function (u) {
-//
-//       console.log('encontrado', u)
-//       next()
-//     }).catch(function (error) {
-//
-//   })
-// });
-

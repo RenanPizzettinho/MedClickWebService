@@ -112,7 +112,7 @@ module.exports = function (ROUTER) {
             });
 
             req.paciente.integracoes.azumio.dados = azumio.dados;
-
+            req.paciente.integracoes.azumio.atualizadoEm = azumio.atualizadoEm;
             req.paciente.save({new: true})
               .then(function (newPaciente) {
                 res.json(newPaciente)

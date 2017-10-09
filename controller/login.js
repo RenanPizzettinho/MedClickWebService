@@ -26,8 +26,8 @@ function logar(req, res, next) {
     email: true,
     nome: true,
     _id: true,
-    "medico._id": true,
-    "paciente._id": true
+    idMedico: true,
+    idPaciente: true
   })
     .exec()
     .then(function (user) {

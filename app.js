@@ -12,7 +12,7 @@ require('./config/mensagensMongoose');
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -27,13 +27,6 @@ consign({
   .into(ROUTER);
 
 app.use('/api/v1', ROUTER);
-
-/*app.use('/api/v1/contexto/:idContexto',
-  function (req, res, next) {
-    console.log('contexto', req.params.idContexto);
-    req.contexto = req.params.idContexto;
-    next()
-  }, ROUTER);*/
 
 consign({
   extensions: ['.js']

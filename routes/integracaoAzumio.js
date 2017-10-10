@@ -24,7 +24,7 @@ module.exports = function (ROUTER) {
 
   function verificaToken(req, res, next) {
     let idPaciente = req.params.id;
-    let pathLocal = `http:// ${req.hostname === 'localhost' ? 'localhost:3000' : req.hostname}`;
+    let pathLocal = `http://${req.hostname === 'localhost' ? 'localhost:3000' : req.hostname}`;
     if(!idPaciente){
       return next({message: "ID do paciente não informado", status: 403 })
     }

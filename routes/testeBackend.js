@@ -7,7 +7,7 @@ let router = express.Router();
 let path = require('path');
 
 module.exports = function (ROUTER) {
-  router.get('/teste', (req, res) => res.json({data: 'OK'}));
+  router.get('/teste', (req, res) => {console.log(req.hostname);res.json({data: 'OK'}); } );
 
   ROUTER.use('/', router);
 };

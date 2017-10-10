@@ -16,7 +16,6 @@ module.exports = function (ROUTER) {
   const pathAuthorizeAzumio = "/authorize?redirect_uri=";
   const pathLoginAzumio = "/login?redirect_uri=";
   const pathSubscriptionAzumio = "/subscriptions?url=";
-  const pathLocal = "http://localhost:3000";
   const apiLocal = "/api/v1";
   const pathIntegracaoAzumio = "/integracao/azumio/paciente";// /ID_PACIENTE
   const pathSalvarToken = "/saveToken";
@@ -25,7 +24,7 @@ module.exports = function (ROUTER) {
 
   function verificaToken(req, res, next) {
     let idPaciente = req.params.id;
-
+    let pathLocal = `http:// ${req.hostname === 'localhost' ? 'localhost:3000' : req.hostname}`;
     if(!idPaciente){
       return next({message: "ID do paciente não informado", status: 403 })
     }
